@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ambulancias STEN</title>
+<style>
+:root{--r:#C0392B;--rc:#2a1210;--a:#E6A817;--ac:#2a2000;--v:#1E8449;--vc:#102a18;--bg:#0d0d0d;--card:#181818;--card2:#1f1f1f;--br:#2e2e2e;--tx:#f0f0f0;--mu:#888;--ib:#111;--fn:'Segoe UI',system-ui,sans-serif;--rad:12px;--rsm:8px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh;-webkit-text-size-adjust:100%;}
+.hdr{background:#0a0a0a;border-bottom:1px solid var(--br);padding:14px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-ico{width:36px;height:36px;background:var(--r);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;}
+.logo-tx{font-size:16px;font-weight:700;letter-spacing:.5px;}
+.logo-sub{font-size:10px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;}
+.dtime{font-size:11px;color:var(--mu);text-align:right;}
+.tabs{display:flex;margin-top:12px;gap:6px;}
+.tab{flex:1;padding:8px 4px;border-radius:var(--rsm);border:1.5px solid transparent;background:var(--card);color:var(--mu);font-size:11px;font-weight:700;text-align:center;cursor:pointer;transition:all .2s;}
+.tab .dot{width:8px;height:8px;border-radius:50%;margin:0 auto 4px;background:#444;}
+.tab.active.U{background:var(--rc);border-color:var(--r);color:#ff8a7a;}.tab.active.U .dot{background:var(--r);}
+.tab.active.T{background:var(--ac);border-color:var(--a);color:#ffd27a;}.tab.active.T .dot{background:var(--a);}
+.tab.active.E{background:var(--vc);border-color:var(--v);color:#7aefaa;}.tab.active.E .dot{background:var(--v);}
+.cnt{padding:12px 14px 100px;}
+.sec{display:none;}.sec.on{display:block;}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;border-radius:var(--rad);border-left:4px solid;}
+.U .sec-hdr{background:var(--rc);border-color:var(--r);}
+.T .sec-hdr{background:var(--ac);border-color:var(--a);}
+.E .sec-hdr{background:var(--vc);border-color:var(--v);}
+.sec-hdr .ico{font-size:22px;}.sec-hdr .tit{font-size:17px;font-weight:700;}.sec-hdr .sub{font-size:11px;color:var(--mu);}
+.fc{background:var(--card);border:1px solid var(--br);border-radius:var(--rad);margin-bottom:12px;overflow:hidden;}
+.fch{padding:10px 14px;background:var(--card2);border-bottom:1px solid var(--br);font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);}
+.fcb{padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+label{font-size:12px;color:var(--mu);font-weight:500;margin-bottom:4px;display:block;}
+input[type=text],input[type=number],input[type=tel],input[type=date],input[type=time],textarea,select{width:100%;background:var(--ib);border:1px solid var(--br);border-radius:var(--rsm);color:var(--tx);font-size:14px;padding:9px 12px;font-family:var(--fn);-webkit-appearance:none;appearance:none;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+textarea{resize:vertical;min-height:70px;line-height:1.5;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#555;}
+.f{display:flex;flex-direction:column;}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tg{display:flex;gap:6px;flex-wrap:wrap;}
+.tb{flex:1;min-width:80px;padding:9px 8px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.tb.ag{background:#0e2a18;border-color:#1E8449;color:#7aefaa;}
+.tb.ar{background:#2a0e0e;border-color:#C0392B;color:#ff8a7a;}
+.tb.ay{background:#2a2000;border-color:#E6A817;color:#ffd27a;}
+.cond{display:none;margin-top:6px;padding:10px 12px;background:#0a0a0a;border-radius:var(--rsm);border:1px solid var(--br);}
+.cond.on{display:block;}
+.cg{display:flex;flex-wrap:wrap;gap:6px;}
+.cc{padding:6px 12px;border-radius:20px;border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;user-select:none;}
+.cc.on{background:#1a1a2a;border-color:#7a7aff;color:#b0b0ff;}
+.eq-item{display:flex;align-items:center;gap:8px;background:var(--ib);border:1.5px solid var(--br);border-radius:var(--rsm);padding:8px 10px;margin-bottom:5px;transition:border-color .15s;}
+.eq-item.on{border-color:#7a7aff;}
+.eq-chk{width:17px;height:17px;accent-color:#7a7aff;cursor:pointer;flex-shrink:0;}
+.eq-lbl{font-size:13px;color:var(--mu);cursor:pointer;flex:1;}
+.eq-item.on .eq-lbl{color:#b0b0ff;}
+.eq-qty{width:58px;font-size:12px;padding:4px 6px;background:#0a0a0a;border:1px solid #333;border-radius:6px;color:var(--tx);text-align:center;display:none;}
+.eq-item.on .eq-qty{display:block;}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pb{padding:10px 8px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.pb .pi{font-size:16px;margin-bottom:2px;}
+.pb.on{background:#0e2020;border-color:#1abc9c;color:#7aefdf;}
+.ug{display:flex;gap:8px;}
+.ub{flex:1;padding:12px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:15px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;}
+.ub.on{background:#0e1a2a;border-color:#2980B9;color:#7ab0ff;}
+.usub{font-size:10px;font-weight:400;color:#555;display:block;margin-top:2px;}
+.pgg{display:flex;flex-wrap:wrap;gap:6px;}
+.pc{padding:7px 14px;border-radius:20px;border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.pc.on{background:#2a2000;border-color:var(--a);color:#ffd27a;}
+.par-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.par{padding:9px 10px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
+.par .av{width:26px;height:26px;border-radius:50%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--mu);flex-shrink:0;}
+.par.on{border-color:#7a7aff;color:#e0e0ff;background:#12122a;}.par.on .av{background:#2a2aaa;color:#b0b0ff;}
+.ctz{background:#0e0e1a;border:1px solid #2a2a4a;border-radius:var(--rad);padding:14px;margin-bottom:4px;}
+.ctz-t{font-size:11px;color:#9090d0;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.pr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1a1a2a;font-size:13px;}
+.pr:last-child{border-bottom:none;}
+.pl{color:var(--mu);}.pv{font-weight:600;}
+.ptot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:10px;background:#12122a;border-radius:var(--rsm);}
+.ptot-l{font-size:12px;color:#9090d0;font-weight:700;}
+.ptot-v{font-size:22px;font-weight:800;color:#a0a0ff;}
+.itag{font-size:11px;color:#555;margin-top:4px;}
+.dtr{display:flex;gap:10px;}.dtr .f{flex:1;}
+.wa-sec{margin-top:16px;}
+.wa-box{background:#0b1f0e;border:1px solid #1a4020;border-radius:var(--rad);padding:14px;margin-bottom:10px;}
+.wa-lbl{font-size:10px;color:#4a8a4a;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.wa-lbl span{color:#7aef9a;}
+.wa-ta{width:100%;background:#060f07;border:1px solid #1a4020;border-radius:var(--rsm);color:#c8f0c8;font-size:13px;line-height:1.8;padding:12px;font-family:monospace;min-height:300px;resize:vertical;}
+.wa-ta:focus{outline:none;border-color:#2a6a2a;}
+.wa-act{display:flex;gap:8px;}
+.bwa{flex:1;padding:13px;border-radius:var(--rsm);border:none;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.bcp{background:#1a2a1a;color:#7aef9a;border:1.5px solid #1E8449;}
+.bsn{background:#128C7E;color:#fff;}
+.bwa:active{transform:scale(.97);}
+.bgen{width:100%;padding:15px;border-radius:var(--rad);border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:8px;letter-spacing:.5px;}
+.U .bgen{background:var(--r);color:#fff;}
+.T .bgen{background:var(--a);color:#1a1400;}
+.E .bgen{background:var(--v);color:#fff;}
+.bgen:active{transform:scale(.98);}
+.brst{width:100%;padding:11px;border-radius:var(--rsm);border:1px solid var(--br);background:transparent;color:var(--mu);font-size:13px;cursor:pointer;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo"><div class="logo-ico">+</div><div><div class="logo-tx">AMBULANCIAS STEN</div><div class="logo-sub">Coordinacion de Servicios</div></div></div>
+    <div class="dtime" id="rl"></div>
+  </div>
+  <div class="tabs">
+    <div class="tab U on" onclick="sTab('U')"><div class="dot"></div>URGENCIAS</div>
+    <div class="tab T" onclick="sTab('T')"><div class="dot"></div>TRASLADO</div>
+    <div class="tab E" onclick="sTab('E')"><div class="dot"></div>EVENTO</div>
+  </div>
+</div>
+<div class="cnt">
+
+<!-- URGENCIAS -->
+<div class="sec U on" id="sU">
+  <div class="sec-hdr"><span class="ico">!</span><div><div class="tit">URGENCIA</div><div class="sub">Servicio de emergencia medica</div></div></div>
+
+  <div class="fc"><div class="fch">Fecha y hora</div><div class="fcb"><div class="dtr"><div class="f"><label>Fecha</label><input type="date" id="u-fec"></div><div class="f"><label>Hora</label><input type="time" id="u-hor"></div></div></div></div>
+
+  <div class="fc"><div class="fch">Localizacion del servicio</div><div class="fcb">
+    <div class="f"><label>Direccion / Ubicacion</label><input type="text" id="u-ubi" placeholder="Calle, colonia, referencia..."></div>
+    <div class="f"><label>Cual es la urgencia</label><input type="text" id="u-urg" placeholder="Descripcion breve de la emergencia"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Estado del paciente</div><div class="fcb">
+    <div class="f"><label>Nivel de conciencia</label>
+      <div class="tg"><div class="tb ag" id="uc-c" onclick="sToggle('uc','c','ag')">Consciente</div><div class="tb" id="uc-i" onclick="sToggle('uc','i','ar')">Inconsciente</div></div>
+      <div class="cond" id="cd-incon"><label>Tiempo de inconsciencia</label><input type="text" id="u-tincon" placeholder="Ej: 10 minutos, 1 hora..."></div>
+    </div>
+    <div class="f"><label>Lesiones visibles</label>
+      <div class="tg"><div class="tb" id="ul-si" onclick="sToggle('ul','si','ar')">Si</div><div class="tb ag" id="ul-no" onclick="sToggle('ul','no','ag')">No</div></div>
+      <div class="cond" id="cd-les"><label>Descripcion de lesiones</label><input type="text" id="u-les" placeholder="Describir lesiones visibles"></div>
+    </div>
+    <div class="f"><label>Enfermedades cronicas</label>
+      <div class="cg" id="ucron">
+        <div class="cc" onclick="cChip(this)">Diabetes</div><div class="cc" onclick="cChip(this)">HTA</div><div class="cc" onclick="cChip(this)">EPOC</div><div class="cc" onclick="cChip(this)">Cardiopatia</div><div class="cc" onclick="cChip(this)">Renal</div><div class="cc" onclick="cChip(this)">Oncologico</div><div class="cc" onclick="cChipOtro(this,'ucron-o')">Otro</div>
+      </div>
+      <div class="cond" id="ucron-o"><input type="text" id="ucron-otxt" placeholder="Especificar enfermedad cronica..."></div>
+    </div>
+    <div class="f"><label>Observacion adicional</label><input type="text" id="u-obs-est" placeholder="Informacion adicional del estado"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Datos del paciente</div><div class="fcb">
+    <div class="f"><label>Nombre completo</label><input type="text" id="u-nom" placeholder="Nombre y apellidos"></div>
+    <div class="f2"><div class="f"><label>Edad</label><input type="number" id="u-edad" placeholder="Anos"></div><div class="f"><label>Peso (kg)</label><input type="number" id="u-peso" placeholder="kg"></div></div>
+    <div class="f"><label>Fecha de nacimiento</label><input type="date" id="u-fnac"></div>
+    <div class="f"><label>Ubicacion del paciente al momento</label><textarea id="u-ubpx" placeholder="Ej: Interior del domicilio, planta baja, consultorio 3..."></textarea></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Equipo adicional</div><div class="fcb" id="ueq">
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Oxigeno"><label class="eq-lbl">Oxigeno</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Ventilador"><label class="eq-lbl">Ventilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Monitor cardiaco"><label class="eq-lbl">Monitor cardiaco</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Desfibrilador"><label class="eq-lbl">Desfibrilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Colarin cervical"><label class="eq-lbl">Colarin cervical</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Camilla rigida"><label class="eq-lbl">Camilla rigida</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Silla de ruedas"><label class="eq-lbl">Silla de ruedas</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="otro"><label class="eq-lbl">Otro</label><input class="eq-qty" type="text" placeholder="Describir..."></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Contacto</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre</label><input type="text" id="u-cn" placeholder="Nombre"></div><div class="f"><label>Telefono</label><input type="tel" id="u-ct" placeholder="Numero"></div></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Cotizacion</div><div class="fcb">
+    <div class="f"><label>Tipo de servicio</label>
+      <select id="u-serv" onchange="cU()">
+        <option value="">-- Seleccionar --</option>
+        <option value="1600">Traslado de urgencias  -  $1,600</option>
+        <option value="3500">Traslado terapia intensiva  -  $3,500</option>
+        <option value="1300">Traslado sencillo  -  $1,300</option>
+      </select>
+    </div>
+    <div class="f"><label>Horas adicionales (despues de 1 hr cortesia incluida)</label><input type="number" id="u-hex" min="0" value="0" onchange="cU()"><span class="itag">$600 por hora o fraccion</span></div>
+    <div class="ctz"><div class="ctz-t">Desglose</div>
+      <div class="pr"><span class="pl">Servicio base</span><span class="pv" id="u-pb">$0</span></div>
+      <div class="pr"><span class="pl">Tiempo extra</span><span class="pv" id="u-pe">$0</span></div>
+      <div class="pr" id="u-ivr" style="display:none"><span class="pl">IVA 8% (tarjeta)</span><span class="pv" id="u-pi"></span></div>
+      <div class="ptot"><span class="ptot-l">TOTAL</span><span class="ptot-v" id="u-tot">$0</span></div>
+    </div>
+    <div class="f"><label>Precio manual (sobreescribe calculadora)</label><input type="number" id="u-pm" placeholder="Ingresar monto si es diferente"></div>
+    <div class="f"><label>Metodo de pago</label>
+      <div class="pg" id="u-pg">
+        <div class="pb" onclick="sPago('u','Efectivo',this)"><div class="pi">$</div>Efectivo</div>
+        <div class="pb" onclick="sPago('u','Tarjeta',this)"><div class="pi">#</div>Tarjeta +8% IVA</div>
+        <div class="pb" onclick="sPago('u','Transferencia',this)"><div class="pi">~</div>Transferencia</div>
+        <div class="pb" onclick="sPago('u','Facturacion',this)"><div class="pi">%</div>Facturacion</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-u-fact"><label>Numero de cuenta / Razon social</label><input type="text" id="u-fact" placeholder="Datos de facturacion"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Unidad y paramedicos</div><div class="fcb">
+    <div class="f"><label>Unidad asignada</label><div class="ug" id="u-und"><div class="ub" onclick="sUnd('u','UM03',this)">UM03<span class="usub">Basica</span></div><div class="ub" onclick="sUnd('u','UM05',this)">UM05<span class="usub">Avanzada</span></div></div></div>
+    <div class="f"><label>Paramedicos a bordo</label>
+      <div class="par-grid" id="u-par">
+        <div class="par" onclick="tPar(this)"><div class="av">CR</div>Cristobal</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AL</div>Alfredo</div>
+        <div class="par" onclick="tPar(this)"><div class="av">FR</div>Francisco</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AB</div>Abigail</div>
+        <div class="par" onclick="tPar(this)"><div class="av">JU</div>Julio</div>
+        <div class="par" onclick="tPar(this)"><div class="av">IS</div>Isaac</div>
+        <div class="par" onclick="tPar(this)"><div class="av">DA</div>Dayra</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Observaciones</div><div class="fcb"><textarea id="u-obs" placeholder="Notas adicionales, indicaciones especiales..."></textarea></div></div>
+
+  <div class="wa-sec">
+    <button class="bgen" onclick="genMsg('U')">Vista previa - Enviar por WhatsApp</button>
+  </div>
+  <div id="wp-U" style="display:none;margin-top:12px;">
+    <div class="wa-box"><div class="wa-lbl">Previsualizar y editar <span>(puedes corregir antes de enviar)</span></div><textarea class="wa-ta" id="wt-U"></textarea></div>
+    <div class="wa-act"><button class="bwa bcp" onclick="copiar('U')">Copiar mensaje</button><button class="bwa bsn" onclick="enviar('U')">Abrir WhatsApp</button></div>
+    <button class="brst" onclick="reset('U')">Limpiar formulario</button>
+  </div>
+</div>
+
+<!-- TRASLADO -->
+<div class="sec T" id="sT">
+  <div class="sec-hdr"><span class="ico">+</span><div><div class="tit">TRASLADO</div><div class="sub">Coordinacion de traslado programado</div></div></div>
+
+  <div class="fc"><div class="fch">Fecha y hora</div><div class="fcb"><div class="dtr"><div class="f"><label>Fecha</label><input type="date" id="t-fec"></div><div class="f"><label>Hora</label><input type="time" id="t-hor"></div></div></div></div>
+
+  <div class="fc"><div class="fch">Tipo de traslado</div><div class="fcb">
+    <div class="f"><label>Clasificacion</label>
+      <div class="pgg" id="t-chips">
+        <div class="pc" onclick="sTipo(this,'Egreso')">Egreso</div><div class="pc" onclick="sTipo(this,'Estudio')">Estudio</div><div class="pc" onclick="sTipo(this,'Consulta')">Consulta</div><div class="pc" onclick="sTipo(this,'Sesiones')">Sesiones</div><div class="pc" onclick="sTipo(this,'Interhospitalario')">Interhospitalario</div><div class="pc" onclick="sTipo(this,'Foraneo')">Foraneo</div><div class="pc" onclick="sTipo(this,'Otro')">Otro</div>
+      </div>
+      <div class="cond" id="t-otro-box"><input type="text" id="t-otro" placeholder="Especificar tipo..."></div>
+    </div>
+    <div class="f"><label>Destino principal</label>
+      <div class="tg"><div class="tb" id="td-h" onclick="sToggle('td','h','ay')">Hospital</div><div class="tb" id="td-e" onclick="sToggle('td','e','ay')">Estudio</div><div class="tb" id="td-d" onclick="sToggle('td','d','ay')">Domicilio</div></div>
+    </div>
+    <div class="f2"><div class="f"><label>Origen</label><input type="text" id="t-ori" placeholder="Hospital, domicilio..."></div><div class="f"><label>Destino</label><input type="text" id="t-dst" placeholder="Nombre o direccion"></div></div>
+    <div class="f"><label>Tipo de traslado medico</label>
+      <div class="tg"><div class="tb" id="tm-b" onclick="sToggle('tm','b','ay')">Basico</div><div class="tb" id="tm-t" onclick="sToggle('tm','t','ay')">Terapia Intensiva</div></div>
+    </div>
+    <div class="f"><label>Motivo / Especificaciones</label><textarea id="t-esp" placeholder="Ej: Consulta con Dr. Garcia, tomografia de torax, quimioterapia sesion 3..."></textarea></div>
+  </div></div>
+
+  <div class="fc" id="fc-for" style="display:none"><div class="fch">Traslado foraneo</div><div class="fcb"><div class="f"><label>Kilometros (ida)</label><input type="number" id="t-km" placeholder="0" onchange="cT()"><span class="itag">Basico: $40/km | Terapia intensiva: $50/km | Urgencia: $55/km</span></div></div></div>
+
+  <div class="fc"><div class="fch">Datos del paciente</div><div class="fcb">
+    <div class="f"><label>Nombre completo</label><input type="text" id="t-nom" placeholder="Nombre y apellidos"></div>
+    <div class="f2"><div class="f"><label>Edad</label><input type="number" id="t-edad" placeholder="Anos"></div><div class="f"><label>Peso (kg)</label><input type="number" id="t-peso" placeholder="kg"></div></div>
+    <div class="f"><label>Fecha de nacimiento</label><input type="date" id="t-fnac"></div>
+    <div class="f"><label>Ubicacion del paciente</label><input type="text" id="t-ubpx" placeholder="Cuarto, piso, area..."></div>
+    <div class="f"><label>Diagnostico</label><input type="text" id="t-diag" placeholder="Diagnostico principal"></div>
+    <div class="f"><label>Enfermedades cronicas</label>
+      <div class="cg" id="tcron">
+        <div class="cc" onclick="cChip(this)">Diabetes</div><div class="cc" onclick="cChip(this)">HTA</div><div class="cc" onclick="cChip(this)">EPOC</div><div class="cc" onclick="cChip(this)">Cardiopatia</div><div class="cc" onclick="cChip(this)">Renal</div><div class="cc" onclick="cChip(this)">Oncologico</div><div class="cc" onclick="cChipOtro(this,'tcron-o')">Otro</div>
+      </div>
+      <div class="cond" id="tcron-o"><input type="text" id="tcron-otxt" placeholder="Especificar enfermedad cronica..."></div>
+    </div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Equipo medico requerido</div><div class="fcb" id="teq">
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Oxigeno"><label class="eq-lbl">Oxigeno</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Ventilador"><label class="eq-lbl">Ventilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Bombas de infusion"><label class="eq-lbl">Bombas de infusion</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Monitor cardiaco"><label class="eq-lbl">Monitor cardiaco</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Desfibrilador"><label class="eq-lbl">Desfibrilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Aspirador de secreciones"><label class="eq-lbl">Aspirador de secreciones</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Incubadora neonatal"><label class="eq-lbl">Incubadora neonatal</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Colarin cervical"><label class="eq-lbl">Colarin cervical</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="otro"><label class="eq-lbl">Otro</label><input class="eq-qty" type="text" placeholder="Describir..."></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Medico tratante (opcional)</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre del medico</label><input type="text" id="t-medn" placeholder="Dr. Nombre"></div><div class="f"><label>Telefono</label><input type="tel" id="t-medt" placeholder="Numero"></div></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Contacto familiar</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre / Parentesco</label><input type="text" id="t-famn" placeholder="Nombre y parentesco"></div><div class="f"><label>Telefono</label><input type="tel" id="t-famt" placeholder="Numero"></div></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Cotizacion</div><div class="fcb">
+    <div class="f"><label>Tarifa base</label>
+      <select id="t-tar" onchange="cT()">
+        <option value="">-- Seleccionar --</option>
+        <option value="1300">Traslado sencillo  -  $1,300</option>
+        <option value="900">Taxi sanitario (no urgencia)  -  $900</option>
+        <option value="1800">Traslado completo / estudios  -  $1,800</option>
+        <option value="3500">Terapia intensiva  -  $3,500</option>
+        <option value="3500b">Neonato con incubadora  -  $3,500</option>
+        <option value="for">Foraneo (calculo por km)</option>
+      </select>
+    </div>
+    <div class="f" id="t-km-campo" style="display:none"><label>Kilometros</label><input type="number" id="t-km2" placeholder="0" onchange="cT()"><span class="itag">Basico $40/km | Terapia intensiva $50/km</span></div>
+    <div class="f"><label>Horas adicionales (despues de 1 hr cortesia)</label><input type="number" id="t-hex" min="0" value="0" onchange="cT()"><span class="itag">$600 por hora o fraccion</span></div>
+    <div class="ctz"><div class="ctz-t">Desglose</div>
+      <div class="pr"><span class="pl">Tarifa base</span><span class="pv" id="t-pb">$0</span></div>
+      <div class="pr"><span class="pl">Tiempo extra</span><span class="pv" id="t-pe">$0</span></div>
+      <div class="pr" id="t-ivr" style="display:none"><span class="pl">IVA 8% (tarjeta)</span><span class="pv" id="t-pi"></span></div>
+      <div class="ptot"><span class="ptot-l">TOTAL</span><span class="ptot-v" id="t-tot">$0</span></div>
+    </div>
+    <div class="f"><label>Precio manual (opcional)</label><input type="number" id="t-pm" placeholder="Ingresar monto"></div>
+    <div class="f"><label>Metodo de pago</label>
+      <div class="pg" id="t-pg">
+        <div class="pb" onclick="sPago('t','Efectivo',this)"><div class="pi">$</div>Efectivo</div>
+        <div class="pb" onclick="sPago('t','Tarjeta',this)"><div class="pi">#</div>Tarjeta +8% IVA</div>
+        <div class="pb" onclick="sPago('t','Transferencia',this)"><div class="pi">~</div>Transferencia</div>
+        <div class="pb" onclick="sPago('t','Facturacion',this)"><div class="pi">%</div>Facturacion</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-t-fact"><label>Numero de cuenta / Razon social</label><input type="text" id="t-fact" placeholder="Datos de facturacion"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Unidad y paramedicos</div><div class="fcb">
+    <div class="f"><label>Unidad asignada</label><div class="ug" id="t-und"><div class="ub" onclick="sUnd('t','UM03',this)">UM03<span class="usub">Basica</span></div><div class="ub" onclick="sUnd('t','UM05',this)">UM05<span class="usub">Avanzada</span></div></div></div>
+    <div class="f"><label>Paramedicos a bordo</label>
+      <div class="par-grid" id="t-par">
+        <div class="par" onclick="tPar(this)"><div class="av">CR</div>Cristobal</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AL</div>Alfredo</div>
+        <div class="par" onclick="tPar(this)"><div class="av">FR</div>Francisco</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AB</div>Abigail</div>
+        <div class="par" onclick="tPar(this)"><div class="av">JU</div>Julio</div>
+        <div class="par" onclick="tPar(this)"><div class="av">IS</div>Isaac</div>
+        <div class="par" onclick="tPar(this)"><div class="av">DA</div>Dayra</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Notas</div><div class="fcb"><textarea id="t-notas" placeholder="Indicaciones especiales, condiciones del traslado..."></textarea></div></div>
+
+  <div class="wa-sec"><button class="bgen" onclick="genMsg('T')">Vista previa - Enviar por WhatsApp</button></div>
+  <div id="wp-T" style="display:none;margin-top:12px;">
+    <div class="wa-box"><div class="wa-lbl">Previsualizar y editar <span>(puedes corregir antes de enviar)</span></div><textarea class="wa-ta" id="wt-T"></textarea></div>
+    <div class="wa-act"><button class="bwa bcp" onclick="copiar('T')">Copiar mensaje</button><button class="bwa bsn" onclick="enviar('T')">Abrir WhatsApp</button></div>
+    <button class="brst" onclick="reset('T')">Limpiar formulario</button>
+  </div>
+</div>
+
+<!-- EVENTO -->
+<div class="sec E" id="sE">
+  <div class="sec-hdr"><span class="ico">*</span><div><div class="tit">EVENTO</div><div class="sub">Cobertura medica de evento</div></div></div>
+
+  <div class="fc"><div class="fch">Datos del evento</div><div class="fcb">
+    <div class="f"><label>Nombre / Tipo de evento</label><input type="text" id="e-nom" placeholder="Ej: Posada, evento corporativo, maraton..."></div>
+    <div class="f"><label>Lugar / Domicilio</label><input type="text" id="e-lug" placeholder="Direccion completa"></div>
+    <div class="dtr"><div class="f"><label>Fecha</label><input type="date" id="e-fec"></div><div class="f"><label>Hora de inicio</label><input type="time" id="e-hor"></div></div>
+    <div class="f"><label>A cargo de</label><input type="text" id="e-car" placeholder="Nombre del responsable del evento"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Contacto del cliente</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre</label><input type="text" id="e-cn" placeholder="Nombre"></div><div class="f"><label>Telefono</label><input type="tel" id="e-ct" placeholder="Numero"></div></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Cotizacion</div><div class="fcb">
+    <div class="f"><label>Horas de cobertura</label><input type="number" id="e-hs" min="1" value="1" onchange="cE()"><span class="itag">$650 por hora — posadas, picnic, mantenimientos</span></div>
+    <div class="ctz"><div class="ctz-t">Desglose</div>
+      <div class="pr"><span class="pl">Horas de cobertura</span><span class="pv" id="e-ph">$650</span></div>
+      <div class="pr" id="e-ivr" style="display:none"><span class="pl">IVA 8% (tarjeta)</span><span class="pv" id="e-pi"></span></div>
+      <div class="ptot"><span class="ptot-l">TOTAL</span><span class="ptot-v" id="e-tot">$650</span></div>
+    </div>
+    <div class="f"><label>Precio manual (opcional)</label><input type="number" id="e-pm" placeholder="Ingresar monto"></div>
+    <div class="f"><label>Metodo de pago</label>
+      <div class="pg" id="e-pg">
+        <div class="pb" onclick="sPago('e','Efectivo',this)"><div class="pi">$</div>Efectivo</div>
+        <div class="pb" onclick="sPago('e','Tarjeta',this)"><div class="pi">#</div>Tarjeta +8% IVA</div>
+        <div class="pb" onclick="sPago('e','Transferencia',this)"><div class="pi">~</div>Transferencia</div>
+        <div class="pb" onclick="sPago('e','Facturacion',this)"><div class="pi">%</div>Facturacion</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-e-fact"><label>Numero de cuenta / Razon social</label><input type="text" id="e-fact" placeholder="Datos de facturacion"></div>
+    <div class="f"><label>Responsable de pago</label><input type="text" id="e-qui" placeholder="Empresa, persona, hospital..."></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Unidad y paramedicos</div><div class="fcb">
+    <div class="f"><label>Unidad asignada</label><div class="ug" id="e-und"><div class="ub" onclick="sUnd('e','UM03',this)">UM03<span class="usub">Basica</span></div><div class="ub" onclick="sUnd('e','UM05',this)">UM05<span class="usub">Avanzada</span></div></div></div>
+    <div class="f"><label>Paramedicos a bordo</label>
+      <div class="par-grid" id="e-par">
+        <div class="par" onclick="tPar(this)"><div class="av">CR</div>Cristobal</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AL</div>Alfredo</div>
+        <div class="par" onclick="tPar(this)"><div class="av">FR</div>Francisco</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AB</div>Abigail</div>
+        <div class="par" onclick="tPar(this)"><div class="av">JU</div>Julio</div>
+        <div class="par" onclick="tPar(this)"><div class="av">IS</div>Isaac</div>
+        <div class="par" onclick="tPar(this)"><div class="av">DA</div>Dayra</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="wa-sec"><button class="bgen" onclick="genMsg('E')">Vista previa - Enviar por WhatsApp</button></div>
+  <div id="wp-E" style="display:none;margin-top:12px;">
+    <div class="wa-box"><div class="wa-lbl">Previsualizar y editar <span>(puedes corregir antes de enviar)</span></div><textarea class="wa-ta" id="wt-E"></textarea></div>
+    <div class="wa-act"><button class="bwa bcp" onclick="copiar('E')">Copiar mensaje</button><button class="bwa bsn" onclick="enviar('E')">Abrir WhatsApp</button></div>
+    <button class="brst" onclick="reset('E')">Limpiar formulario</button>
+  </div>
+</div>
+
+</div>
+<script>
+const S={u:{p:'',u:''},t:{p:'',u:'',tp:''},e:{p:'',u:''}};
+function clk(){const n=new Date();document.getElementById('rl').innerHTML=n.toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'})+'<br>'+n.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});}
+clk();setInterval(clk,1000);
+function sDef(){const n=new Date();const ds=n.toISOString().split('T')[0];const ts=n.toTimeString().slice(0,5);['u-fec','t-fec','e-fec'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=ds;});['u-hor','t-hor','e-hor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=ts;});}
+sDef();cE();
+function sTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));document.querySelector('.tab.'+t).classList.add('on');document.getElementById('s'+t).classList.add('on');window.scrollTo(0,0);}
+function sToggle(g,v,c){document.querySelectorAll('[id^="'+g+'-"]').forEach(el=>el.classList.remove('ag','ar','ay'));document.getElementById(g+'-'+v).classList.add(c);if(g==='uc')document.getElementById('cd-incon').classList.toggle('on',v==='i');if(g==='ul')document.getElementById('cd-les').classList.toggle('on',v==='si');}
+function cChip(el){el.classList.toggle('on');}
+function cChipOtro(el,boxId){el.classList.toggle('on');document.getElementById(boxId).classList.toggle('on',el.classList.contains('on'));}
+function tEq(cb){cb.closest('.eq-item').classList.toggle('on',cb.checked);}
+function tPar(el){el.classList.toggle('on');}
+function sTipo(el,tp){document.querySelectorAll('#t-chips .pc').forEach(c=>c.classList.remove('on'));el.classList.add('on');S.t.tp=tp;document.getElementById('t-otro-box').classList.toggle('on',tp==='Otro');document.getElementById('fc-for').style.display=tp==='Foraneo'?'block':'none';}
+function sPago(sec,tipo,el){S[sec].p=tipo;document.querySelectorAll('#'+sec+'-pg .pb').forEach(b=>b.classList.remove('on'));el.classList.add('on');const cf=document.getElementById('cd-'+sec+'-fact');if(cf)cf.classList.toggle('on',tipo==='Facturacion');if(sec==='u')cU();if(sec==='t')cT();if(sec==='e')cE();}
+function sUnd(sec,u,el){S[sec].u=u;document.querySelectorAll('#'+sec+'-und .ub').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function fmt(n){return '$'+Math.round(n).toLocaleString('es-MX');}
+function cU(){const base=parseFloat(document.getElementById('u-serv').value)||0;const hex=parseFloat(document.getElementById('u-hex').value)||0;const ext=hex*600;const sub=base+ext;const esT=S.u.p==='Tarjeta';const iva=esT?Math.round(sub*0.08):0;document.getElementById('u-pb').textContent=fmt(base);document.getElementById('u-pe').textContent=fmt(ext);document.getElementById('u-ivr').style.display=esT?'flex':'none';if(esT)document.getElementById('u-pi').textContent=fmt(iva);document.getElementById('u-tot').textContent=fmt(sub+iva);}
+function cT(){const tar=document.getElementById('t-tar').value;const hex=parseFloat(document.getElementById('t-hex').value)||0;const ext=hex*600;let base=0;const kc=document.getElementById('t-km-campo');if(tar==='for'){kc.style.display='flex';const km=parseFloat(document.getElementById('t-km2').value)||0;const esTI=document.getElementById('tm-t').classList.contains('ay');base=km*(esTI?50:40);}else{kc.style.display='none';base=parseFloat(tar)||0;}const sub=base+ext;const esT=S.t.p==='Tarjeta';const iva=esT?Math.round(sub*0.08):0;document.getElementById('t-pb').textContent=fmt(base);document.getElementById('t-pe').textContent=fmt(ext);document.getElementById('t-ivr').style.display=esT?'flex':'none';if(esT)document.getElementById('t-pi').textContent=fmt(iva);document.getElementById('t-tot').textContent=fmt(sub+iva);}
+function cE(){const h=parseFloat(document.getElementById('e-hs').value)||1;const base=h*650;const esT=S.e.p==='Tarjeta';const iva=esT?Math.round(base*0.08):0;document.getElementById('e-ph').textContent=fmt(base);document.getElementById('e-ivr').style.display=esT?'flex':'none';if(esT)document.getElementById('e-pi').textContent=fmt(iva);document.getElementById('e-tot').textContent=fmt(base+iva);}
+function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function go(id){const v=gv(id);return v||null;}
+function gF(id){const v=gv(id);if(!v)return null;const[y,m,d]=v.split('-');return d+'/'+m+'/'+y;}
+function gChips(cid,otroTxtId){const ch=Array.from(document.querySelectorAll('#'+cid+' .cc.on')).map(c=>c.textContent.trim()).filter(t=>t!=='Otro');if(otroTxtId){const o=gv(otroTxtId);if(o)ch.push(o);}return ch.length?ch.join(', '):null;}
+function gEq(cid){const its=[];document.querySelectorAll('#'+cid+' .eq-item.on').forEach(item=>{const n=item.querySelector('.eq-chk').dataset.n;const q=item.querySelector('.eq-qty');const v=q.value.trim();if(n==='otro'){if(v)its.push('- '+v);}else its.push('- '+n+' (x'+v+')');});return its.length?its.join('\n'):null;}
+function gPars(cid){const p=Array.from(document.querySelectorAll('#'+cid+' .par.on')).map(p=>p.lastChild.textContent.trim());return p.length?p.join(', '):null;}
+function gPrecio(sec){const m=gv(sec+'-pm');if(m)return '$'+parseFloat(m).toLocaleString('es-MX');const el=document.getElementById(sec+'-tot');return el?el.textContent:'$0';}
+function ln(l,v){return v?l+': '+v+'\n':'';}
+function blk(t){return '\n'+t.toUpperCase()+'\n'+'─'.repeat(Math.min(t.length,22))+'\n';}
+
+function bU(){
+  const consc=document.getElementById('uc-i').classList.contains('ar')?'Inconsciente':'Consciente';
+  const les=document.getElementById('ul-si').classList.contains('ar')?(gv('u-les')||'Si'):'No';
+  const cron=gChips('ucron','ucron-otxt');
+  const eq=gEq('ueq');
+  const pars=gPars('u-par');
+  const sEl=document.getElementById('u-serv');
+  const sTxt=sEl.value?sEl.options[sEl.selectedIndex].text.split(' - ')[0].trim():null;
+  let m='AMBULANCIAS STEN\n';
+  m+='Servicio: URGENCIA\n';
+  m+=ln('Fecha',gF('u-fec'));
+  m+=ln('Hora',go('u-hor'));
+  m+=blk('Localizacion');
+  m+=ln('Direccion',go('u-ubi'));
+  m+=ln('Urgencia',go('u-urg'));
+  m+=blk('Estado del paciente');
+  m+='Conciencia: '+consc+'\n';
+  if(consc==='Inconsciente')m+=ln('Tiempo inconsciente',go('u-tincon'));
+  m+='Lesiones visibles: '+les+'\n';
+  if(cron)m+='Enf. cronicas: '+cron+'\n';
+  if(go('u-obs-est'))m+='Observacion: '+gv('u-obs-est')+'\n';
+  m+=blk('Paciente');
+  m+=ln('Nombre',go('u-nom'));
+  if(go('u-edad'))m+='Edad: '+gv('u-edad')+' anos\n';
+  if(go('u-peso'))m+='Peso: '+gv('u-peso')+' kg\n';
+  m+=ln('Fecha de nacimiento',gF('u-fnac'));
+  m+=ln('Ubicacion al momento',go('u-ubpx'));
+  if(eq){m+=blk('Equipo adicional');m+=eq+'\n';}
+  if(go('u-cn')||go('u-ct')){m+=blk('Contacto');m+=ln('Nombre',go('u-cn'));m+=ln('Telefono',go('u-ct'));}
+  m+=blk('Servicio y pago');
+  if(sTxt)m+='Tipo: '+sTxt+'\n';
+  m+='Total: '+gPrecio('u')+'\n';
+  if(S.u.p)m+='Metodo de pago: '+S.u.p+(S.u.p==='Tarjeta'?' (incluye IVA 8%)':'')+'\n';
+  if(S.u.p==='Facturacion'&&go('u-fact'))m+='Facturacion: '+gv('u-fact')+'\n';
+  if(S.u.u||pars){m+=blk('Unidad y paramedicos');if(S.u.u)m+='Unidad: '+S.u.u+'\n';if(pars)m+='Paramedicos: '+pars+'\n';}
+  if(go('u-obs')){m+=blk('Observaciones');m+=gv('u-obs')+'\n';}
+  m+='\n──────────────────────\n';
+  m+='Ambulancias STEN  |  (899) 122 7489';
+  return m;
+}
+
+function bT(){
+  const destMap={h:'Hospital',e:'Estudio',d:'Domicilio'};
+  const dk=['h','e','d'].find(k=>document.getElementById('td-'+k).classList.contains('ay'));
+  const tipoMed=document.getElementById('tm-t').classList.contains('ay')?'Terapia Intensiva':document.getElementById('tm-b').classList.contains('ay')?'Basico':null;
+  const cron=gChips('tcron','tcron-otxt');
+  const eq=gEq('teq');
+  const pars=gPars('t-par');
+  const tarEl=document.getElementById('t-tar');
+  const tarTxt=tarEl.value?tarEl.options[tarEl.selectedIndex].text.split(' - ')[0].trim():null;
+  let m='AMBULANCIAS STEN\n';
+  m+='Servicio: TRASLADO\n';
+  m+=ln('Fecha',gF('t-fec'));
+  m+=ln('Hora',go('t-hor'));
+  m+=blk('Tipo de servicio');
+  if(S.t.tp)m+='Clasificacion: '+S.t.tp+(S.t.tp==='Otro'&&go('t-otro')?' ('+gv('t-otro')+')':'')+'\n';
+  if(dk)m+='Destino principal: '+destMap[dk]+'\n';
+  if(tipoMed)m+='Traslado medico: '+tipoMed+'\n';
+  m+=ln('Origen',go('t-ori'));
+  m+=ln('Destino',go('t-dst'));
+  m+=ln('Motivo',go('t-esp'));
+  m+=blk('Paciente');
+  m+=ln('Nombre',go('t-nom'));
+  if(go('t-edad'))m+='Edad: '+gv('t-edad')+' anos\n';
+  if(go('t-peso'))m+='Peso: '+gv('t-peso')+' kg\n';
+  m+=ln('Fecha de nacimiento',gF('t-fnac'));
+  m+=ln('Ubicacion',go('t-ubpx'));
+  m+=ln('Diagnostico',go('t-diag'));
+  if(cron)m+='Enf. cronicas: '+cron+'\n';
+  if(eq){m+=blk('Equipo medico');m+=eq+'\n';}
+  if(go('t-medn')||go('t-medt')){m+=blk('Medico tratante');m+=ln('Nombre',go('t-medn'));m+=ln('Telefono',go('t-medt'));}
+  if(go('t-famn')||go('t-famt')){m+=blk('Contacto familiar');m+=ln('Nombre',go('t-famn'));m+=ln('Telefono',go('t-famt'));}
+  m+=blk('Servicio y pago');
+  if(tarTxt)m+='Tarifa: '+tarTxt+'\n';
+  if(tarEl.value==='for'&&go('t-km2'))m+='Kilometros: '+gv('t-km2')+'\n';
+  m+='Total: '+gPrecio('t')+'\n';
+  if(S.t.p)m+='Metodo de pago: '+S.t.p+(S.t.p==='Tarjeta'?' (incluye IVA 8%)':'')+'\n';
+  if(S.t.p==='Facturacion'&&go('t-fact'))m+='Facturacion: '+gv('t-fact')+'\n';
+  if(S.t.u||pars){m+=blk('Unidad y paramedicos');if(S.t.u)m+='Unidad: '+S.t.u+'\n';if(pars)m+='Paramedicos: '+pars+'\n';}
+  if(go('t-notas')){m+=blk('Notas');m+=gv('t-notas')+'\n';}
+  m+='\n──────────────────────\n';
+  m+='Ambulancias STEN  |  (899) 122 7489';
+  return m;
+}
+
+function bE(){
+  const pars=gPars('e-par');
+  const h=gv('e-hs');
+  let m='AMBULANCIAS STEN\n';
+  m+='Servicio: EVENTO\n';
+  m+=blk('Datos del evento');
+  m+=ln('Evento',go('e-nom'));
+  m+=ln('Lugar',go('e-lug'));
+  m+=ln('Fecha',gF('e-fec'));
+  m+=ln('Hora de inicio',go('e-hor'));
+  m+=ln('A cargo de',go('e-car'));
+  if(go('e-cn')||go('e-ct')){m+=blk('Contacto');m+=ln('Nombre',go('e-cn'));m+=ln('Telefono',go('e-ct'));}
+  m+=blk('Servicio y pago');
+  if(h)m+='Horas de cobertura: '+h+(h==='1'?' hora':' horas')+'\n';
+  m+='Total: '+gPrecio('e')+'\n';
+  if(S.e.p)m+='Metodo de pago: '+S.e.p+(S.e.p==='Tarjeta'?' (incluye IVA 8%)':'')+'\n';
+  if(S.e.p==='Facturacion'&&go('e-fact'))m+='Facturacion: '+gv('e-fact')+'\n';
+  if(go('e-qui'))m+='Responsable de pago: '+gv('e-qui')+'\n';
+  if(S.e.u||pars){m+=blk('Unidad y paramedicos');if(S.e.u)m+='Unidad: '+S.e.u+'\n';if(pars)m+='Paramedicos: '+pars+'\n';}
+  m+='\n──────────────────────\n';
+  m+='Ambulancias STEN  |  (899) 122 7489';
+  return m;
+}
+
+function genMsg(tipo){
+  const builds={U:bU,T:bT,E:bE};
+  document.getElementById('wt-'+tipo).value=builds[tipo]();
+  document.getElementById('wp-'+tipo).style.display='block';
+  setTimeout(()=>document.getElementById('wp-'+tipo).scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function copiar(tipo){
+  const txt=document.getElementById('wt-'+tipo).value;
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>alert('Mensaje copiado al portapapeles'));}
+  else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Mensaje copiado');}
+}
+
+function enviar(tipo){
+  const txt=document.getElementById('wt-'+tipo).value;
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+
+function reset(tipo){
+  if(!confirm('Limpiar todos los campos?'))return;
+  const sec=document.getElementById('s'+tipo);
+  sec.querySelectorAll('input,textarea,select').forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value='';});
+  sec.querySelectorAll('.cc,.pc').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.par,.ub,.pb').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.tb').forEach(el=>el.classList.remove('ag','ar','ay'));
+  sec.querySelectorAll('.cond').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.eq-item').forEach(el=>el.classList.remove('on'));
+  document.getElementById('wp-'+tipo).style.display='none';
+  if(tipo==='U')S.u={p:'',u:''};
+  if(tipo==='T'){S.t={p:'',u:'',tp:''};document.getElementById('fc-for').style.display='none';document.getElementById('t-km-campo').style.display='none';}
+  if(tipo==='E')S.e={p:'',u:''};
+  sDef();if(tipo==='E')cE();
+}
+</script>
+</body>
+</html>
