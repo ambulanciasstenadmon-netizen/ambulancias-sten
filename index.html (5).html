@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ambulancias STEN</title>
+<style>
+:root{--r:#C0392B;--rc:#2a1210;--a:#E6A817;--ac:#2a2000;--v:#1E8449;--vc:#102a18;--bg:#0d0d0d;--card:#181818;--card2:#1f1f1f;--br:#2e2e2e;--tx:#f0f0f0;--mu:#888;--ib:#111;--fn:'Segoe UI',system-ui,sans-serif;--rad:12px;--rsm:8px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh;-webkit-text-size-adjust:100%;}
+.hdr{background:#0a0a0a;border-bottom:1px solid var(--br);padding:14px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-ico{width:36px;height:36px;background:var(--r);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;}
+.logo-tx{font-size:16px;font-weight:700;letter-spacing:.5px;}
+.logo-sub{font-size:10px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;}
+.dtime{font-size:11px;color:var(--mu);text-align:right;}
+.tabs{display:flex;margin-top:12px;gap:6px;}
+.tab{flex:1;padding:8px 4px;border-radius:var(--rsm);border:1.5px solid transparent;background:var(--card);color:var(--mu);font-size:11px;font-weight:700;text-align:center;cursor:pointer;transition:all .2s;}
+.tab .dot{width:8px;height:8px;border-radius:50%;margin:0 auto 4px;background:#444;}
+.tab.active.U{background:var(--rc);border-color:var(--r);color:#ff8a7a;}.tab.active.U .dot{background:var(--r);}
+.tab.active.T{background:var(--ac);border-color:var(--a);color:#ffd27a;}.tab.active.T .dot{background:var(--a);}
+.tab.active.E{background:var(--vc);border-color:var(--v);color:#7aefaa;}.tab.active.E .dot{background:var(--v);}
+.cnt{padding:12px 14px 100px;}
+.sec{display:none;}.sec.on{display:block;}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;border-radius:var(--rad);border-left:4px solid;}
+.U .sec-hdr{background:var(--rc);border-color:var(--r);}
+.T .sec-hdr{background:var(--ac);border-color:var(--a);}
+.E .sec-hdr{background:var(--vc);border-color:var(--v);}
+.sec-hdr .ico{font-size:22px;}.sec-hdr .tit{font-size:17px;font-weight:700;}.sec-hdr .sub{font-size:11px;color:var(--mu);}
+.fc{background:var(--card);border:1px solid var(--br);border-radius:var(--rad);margin-bottom:12px;overflow:hidden;}
+.fch{padding:10px 14px;background:var(--card2);border-bottom:1px solid var(--br);font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);}
+.fcb{padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+label{font-size:12px;color:var(--mu);font-weight:500;margin-bottom:4px;display:block;}
+input[type=text],input[type=number],input[type=tel],input[type=date],input[type=time],textarea,select{width:100%;background:var(--ib);border:1px solid var(--br);border-radius:var(--rsm);color:var(--tx);font-size:14px;padding:9px 12px;font-family:var(--fn);-webkit-appearance:none;appearance:none;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+textarea{resize:vertical;min-height:70px;line-height:1.5;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#555;}
+.f{display:flex;flex-direction:column;}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tg{display:flex;gap:6px;flex-wrap:wrap;}
+.tb{flex:1;min-width:80px;padding:9px 8px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.tb.ag{background:#0e2a18;border-color:#1E8449;color:#7aefaa;}
+.tb.ar{background:#2a0e0e;border-color:#C0392B;color:#ff8a7a;}
+.tb.ay{background:#2a2000;border-color:#E6A817;color:#ffd27a;}
+.cond{display:none;margin-top:6px;padding:10px 12px;background:#0a0a0a;border-radius:var(--rsm);border:1px solid var(--br);}
+.cond.on{display:block;}
+.cg{display:flex;flex-wrap:wrap;gap:6px;}
+.cc{padding:6px 12px;border-radius:20px;border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;user-select:none;}
+.cc.on{background:#1a1a2a;border-color:#7a7aff;color:#b0b0ff;}
+.eq-item{display:flex;align-items:center;gap:8px;background:var(--ib);border:1.5px solid var(--br);border-radius:var(--rsm);padding:8px 10px;margin-bottom:5px;transition:border-color .15s;}
+.eq-item.on{border-color:#7a7aff;}
+.eq-chk{width:17px;height:17px;accent-color:#7a7aff;cursor:pointer;flex-shrink:0;}
+.eq-lbl{font-size:13px;color:var(--mu);cursor:pointer;flex:1;}
+.eq-item.on .eq-lbl{color:#b0b0ff;}
+.eq-qty{width:58px;font-size:12px;padding:4px 6px;background:#0a0a0a;border:1px solid #333;border-radius:6px;color:var(--tx);text-align:center;display:none;}
+.eq-item.on .eq-qty{display:block;}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pb{padding:10px 8px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.pb .pi{font-size:16px;margin-bottom:2px;}
+.pb.on{background:#0e2020;border-color:#1abc9c;color:#7aefdf;}
+.ug{display:flex;gap:8px;}
+.ub{flex:1;padding:12px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:15px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;}
+.ub.on{background:#0e1a2a;border-color:#2980B9;color:#7ab0ff;}
+.usub{font-size:10px;font-weight:400;color:#555;display:block;margin-top:2px;}
+.pgg{display:flex;flex-wrap:wrap;gap:6px;}
+.pc{padding:7px 14px;border-radius:20px;border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.pc.on{background:#2a2000;border-color:var(--a);color:#ffd27a;}
+.par-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.par{padding:9px 10px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
+.par .av{width:26px;height:26px;border-radius:50%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--mu);flex-shrink:0;}
+.par.on{border-color:#7a7aff;color:#e0e0ff;background:#12122a;}.par.on .av{background:#2a2aaa;color:#b0b0ff;}
+.ctz{background:#0e0e1a;border:1px solid #2a2a4a;border-radius:var(--rad);padding:14px;margin-bottom:4px;}
+.ctz-t{font-size:11px;color:#9090d0;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.pr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1a1a2a;font-size:13px;}
+.pr:last-child{border-bottom:none;}
+.pl{color:var(--mu);}.pv{font-weight:600;}
+.ptot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:10px;background:#12122a;border-radius:var(--rsm);}
+.ptot-l{font-size:12px;color:#9090d0;font-weight:700;}
+.ptot-v{font-size:22px;font-weight:800;color:#a0a0ff;}
+.itag{font-size:11px;color:#555;margin-top:4px;}
+.dtr{display:flex;gap:10px;}.dtr .f{flex:1;}
+.wa-sec{margin-top:16px;}
+.wa-box{background:#0b1f0e;border:1px solid #1a4020;border-radius:var(--rad);padding:14px;margin-bottom:10px;}
+.wa-lbl{font-size:10px;color:#4a8a4a;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.wa-lbl span{color:#7aef9a;}
+.wa-ta{width:100%;background:#060f07;border:1px solid #1a4020;border-radius:var(--rsm);color:#c8f0c8;font-size:13px;line-height:1.8;padding:12px;font-family:monospace;min-height:300px;resize:vertical;}
+.wa-ta:focus{outline:none;border-color:#2a6a2a;}
+.wa-act{display:flex;gap:8px;}
+.bwa{flex:1;padding:13px;border-radius:var(--rsm);border:none;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.bcp{background:#1a2a1a;color:#7aef9a;border:1.5px solid #1E8449;}
+.bsn{background:#128C7E;color:#fff;}
+.bwa:active{transform:scale(.97);}
+.bgen{width:100%;padding:15px;border-radius:var(--rad);border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:8px;letter-spacing:.5px;}
+.U .bgen{background:var(--r);color:#fff;}
+.T .bgen{background:var(--a);color:#1a1400;}
+.E .bgen{background:var(--v);color:#fff;}
+.bgen:active{transform:scale(.98);}
+/* Firebase patient search */
+.px-wrap{position:relative;}
+.px-sugg{position:absolute;top:100%;left:0;right:0;background:#1a1a2a;border:1px solid #7a7aff;border-radius:var(--rsm);z-index:50;max-height:200px;overflow-y:auto;display:none;}
+.px-sugg.on{display:block;}
+.px-item{padding:10px 12px;cursor:pointer;border-bottom:1px solid #2a2a3a;font-size:13px;}
+.px-item:last-child{border-bottom:none;}
+.px-item:hover,.px-item:active{background:#2a2a4a;}
+.px-name{font-weight:600;color:#e0e0ff;}
+.px-info{font-size:11px;color:#888;margin-top:2px;}
+.btn-save-px{width:100%;padding:11px;border-radius:var(--rsm);border:1.5px solid #7a7aff;background:#12122a;color:#b0b0ff;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;}
+.btn-save-px:active{transform:scale(.98);}
+.tab.active.I{background:#0e1a2a;border-color:#2980B9;color:#7ab0ff;}.tab.active.I .dot{background:#2980B9;}
+.I .sec-hdr{background:#0e1a2a;border-color:#2980B9;}
+/* Estudios catalog */
+.estudio-item{background:var(--ib);border:1.5px solid var(--br);border-radius:var(--rsm);padding:12px 14px;cursor:pointer;transition:all .15s;margin-bottom:6px;}
+.estudio-item:hover{border-color:#2980B9;}
+.estudio-item.on{border-color:#2980B9;background:#0e1a2a;}
+.estudio-nom{font-size:14px;font-weight:600;color:var(--tx);}
+.estudio-precio{font-size:13px;color:#7ab0ff;font-weight:700;margin-top:3px;}
+.estudio-item.on .estudio-nom{color:#7ab0ff;}
+.req-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #1a1a1a;font-size:13px;}
+.req-item:last-child{border-bottom:none;}
+.req-dot{width:8px;height:8px;border-radius:50%;background:#2980B9;flex-shrink:0;margin-top:4px;}
+.canal-item{padding:10px 12px;background:#0a0a0a;border-radius:var(--rsm);border-left:3px solid #2980B9;margin-bottom:6px;font-size:12px;line-height:1.6;}
+.canal-hora{font-size:10px;color:#2980B9;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
+.brst{width:100%;padding:11px;border-radius:var(--rsm);border:1px solid var(--br);background:transparent;color:var(--mu);font-size:13px;cursor:pointer;margin-top:6px;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.checklist-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1a1a1a;cursor:pointer;}
+.checklist-item:last-child{border-bottom:none;}
+.chk-box{width:20px;height:20px;border-radius:5px;border:2px solid var(--br);background:var(--ib);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;}
+.checklist-item.on .chk-box{background:#1E8449;border-color:#1E8449;color:#fff;}
+.chk-lbl{font-size:13px;color:var(--mu);}
+.checklist-item.on .chk-lbl{color:var(--tx);}
+.semaforo{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--rsm);font-size:13px;font-weight:600;margin-bottom:8px;}
+.sem-verde{background:#0e2a18;border:1px solid #1E8449;color:#7aefaa;}
+.sem-amarillo{background:#2a2000;border:1px solid #E6A817;color:#ffd27a;}
+.sem-rojo{background:#2a0e0e;border:1px solid #C0392B;color:#ff8a7a;}
+.origen-btn{flex:1;padding:10px;border-radius:var(--rsm);border:1.5px solid var(--br);background:var(--ib);color:var(--mu);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.origen-btn.on{background:#0e1a2a;border-color:#2980B9;color:#7ab0ff;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo"><div class="logo-ico">+</div><div><div class="logo-tx">AMBULANCIAS STEN</div><div class="logo-sub">Coordinacion de Servicios</div></div></div>
+    <div class="dtime" id="rl"></div>
+  </div>
+  <div class="tabs">
+    <div class="tab U active" onclick="sTab('U')"><div class="dot"></div>URGENCIAS</div>
+    <div class="tab T" onclick="sTab('T')"><div class="dot"></div>TRASLADO</div>
+    <div class="tab E" onclick="sTab('E')"><div class="dot"></div>EVENTO</div>
+    <div class="tab I" onclick="sTab('I')"><div class="dot"></div>ESTUDIOS</div>
+  </div>
+</div>
+<div class="cnt">
+
+<!-- URGENCIAS -->
+<div class="sec U on" id="sU">
+  <div class="sec-hdr"><span class="ico">!</span><div><div class="tit">URGENCIA</div><div class="sub">Servicio de emergencia medica</div></div></div>
+
+  <div class="fc"><div class="fch">Fecha y hora</div><div class="fcb"><div class="dtr"><div class="f"><label>Fecha</label><input type="date" id="u-fec"></div><div class="f"><label>Hora</label><input type="time" id="u-hor"></div></div></div></div>
+
+  <div class="fc"><div class="fch">Localizacion del servicio</div><div class="fcb">
+    <div class="f"><label>Direccion / Ubicacion</label><input type="text" id="u-ubi" placeholder="Calle, colonia, referencia..."></div>
+    <div class="f"><label>Cual es la urgencia</label><input type="text" id="u-urg" placeholder="Descripcion breve de la emergencia"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Estado del paciente</div><div class="fcb">
+    <div class="f"><label>Nivel de conciencia</label>
+      <div class="tg"><div class="tb ag" id="uc-c" onclick="sToggle('uc','c','ag')">Consciente</div><div class="tb" id="uc-i" onclick="sToggle('uc','i','ar')">Inconsciente</div></div>
+      <div class="cond" id="cd-incon"><label>Tiempo de inconsciencia</label><input type="text" id="u-tincon" placeholder="Ej: 10 minutos, 1 hora..."></div>
+    </div>
+    <div class="f"><label>Lesiones visibles</label>
+      <div class="tg"><div class="tb" id="ul-si" onclick="sToggle('ul','si','ar')">Si</div><div class="tb ag" id="ul-no" onclick="sToggle('ul','no','ag')">No</div></div>
+      <div class="cond" id="cd-les"><label>Descripcion de lesiones</label><input type="text" id="u-les" placeholder="Describir lesiones visibles"></div>
+    </div>
+    <div class="f"><label>Enfermedades cronicas</label>
+      <div class="cg" id="ucron">
+        <div class="cc" onclick="cChip(this)">Diabetes</div><div class="cc" onclick="cChip(this)">HTA</div><div class="cc" onclick="cChip(this)">EPOC</div><div class="cc" onclick="cChip(this)">Cardiopatia</div><div class="cc" onclick="cChip(this)">Renal</div><div class="cc" onclick="cChip(this)">Oncologico</div><div class="cc" onclick="cChipOtro(this,'ucron-o')">Otro</div>
+      </div>
+      <div class="cond" id="ucron-o"><input type="text" id="ucron-otxt" placeholder="Especificar enfermedad cronica..."></div>
+    </div>
+    <div class="f"><label>Observacion adicional</label><input type="text" id="u-obs-est" placeholder="Informacion adicional del estado"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Tipo de recorrido e indicaciones</div><div class="fcb">
+    <div class="f"><label>Recorrido</label>
+      <div class="tg"><div class="tb" id="urec-i" onclick="sToggle('urec','i','ay')">Solo ida</div><div class="tb" id="urec-iv" onclick="sToggle('urec','iv','ay')">Ida y vuelta</div></div>
+    </div>
+    <div class="f"><label>Indicaciones</label><textarea id="u-indic" placeholder="Ej: Cita a las 11 en HRR, estar en HES a las 10:30, pedir al paciente traer estudios..."></textarea></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Datos del paciente</div><div class="fcb">
+    <div class="f">
+      <label>Nombre completo</label>
+      <div class="px-wrap">
+        <input type="text" id="u-nom" placeholder="Escribir nombre para buscar..." oninput="buscarPx('u-nom','u-sugg','U')" autocomplete="off">
+        <div class="px-sugg" id="u-sugg"></div>
+      </div>
+      <div class="px-status" id="u-px-status"></div>
+    </div>
+    <div class="f2"><div class="f"><label>Edad</label><input type="number" id="u-edad" placeholder="Se calcula con F. Nac."></div><div class="f"><label>Peso (kg)</label><input type="number" id="u-peso" placeholder="kg"></div></div>
+    <div class="f"><label>Fecha de nacimiento</label><input type="date" id="u-fnac" onchange="calcEdad('u-fnac','u-edad')"></div>
+    <div class="f"><label>Ubicacion del paciente al momento</label><textarea id="u-ubpx" placeholder="Ej: Interior del domicilio, planta baja, consultorio 3..."></textarea></div>
+    <button class="btn-save-px" onclick="guardarPx('U')">+ Guardar paciente en base de datos</button>
+  </div></div>
+
+  <div class="fc"><div class="fch">Equipo adicional</div><div class="fcb" id="ueq">
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Oxigeno"><label class="eq-lbl">Oxigeno</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Ventilador"><label class="eq-lbl">Ventilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Monitor cardiaco"><label class="eq-lbl">Monitor cardiaco</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Desfibrilador"><label class="eq-lbl">Desfibrilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Colarin cervical"><label class="eq-lbl">Colarin cervical</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Camilla rigida"><label class="eq-lbl">Camilla rigida</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Silla de ruedas"><label class="eq-lbl">Silla de ruedas</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="otro"><label class="eq-lbl">Otro</label><input class="eq-qty" type="text" placeholder="Describir..."></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Contacto</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre</label><input type="text" id="u-cn" placeholder="Nombre"></div><div class="f"><label>Parentesco</label><input type="text" id="u-par" placeholder="Ej: Hijo, esposa..."></div></div>
+    <div class="f"><label>Telefono</label><input type="tel" id="u-ct" placeholder="Numero"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Cotizacion</div><div class="fcb">
+    <div class="f"><label>Tipo de servicio</label>
+      <select id="u-serv" onchange="cU()">
+        <option value="">-- Seleccionar --</option>
+        <option value="1600">Traslado de urgencias  -  $1,600</option>
+        <option value="3500">Traslado terapia intensiva  -  $3,500</option>
+        <option value="1300">Traslado sencillo  -  $1,300</option>
+      </select>
+    </div>
+    <div class="f"><label>Horas adicionales (despues de 1 hr cortesia incluida)</label><input type="number" id="u-hex" min="0" value="0" onchange="cU()"><span class="itag">$600 por hora o fraccion</span></div>
+    <div class="ctz"><div class="ctz-t">Desglose</div>
+      <div class="pr"><span class="pl">Servicio base</span><span class="pv" id="u-pb">$0</span></div>
+      <div class="pr"><span class="pl">Tiempo extra</span><span class="pv" id="u-pe">$0</span></div>
+      <div class="pr" id="u-ivr" style="display:none"><span class="pl">IVA 8%</span><span class="pv" id="u-pi"></span></div>
+      <div class="ptot"><span class="ptot-l">TOTAL</span><span class="ptot-v" id="u-tot">$0</span></div>
+    </div>
+    <div class="f"><label>Precio manual (sobreescribe calculadora)</label><input type="number" id="u-pm" placeholder="Ingresar monto si es diferente"></div>
+    <div class="f"><label>Metodo de pago</label>
+      <div class="pg" id="u-pg">
+        <div class="pb" onclick="sPago('u','Efectivo',this)"><div class="pi">$</div>Efectivo</div>
+        <div class="pb" onclick="sPago('u','Tarjeta',this)"><div class="pi">#</div>Tarjeta +8% IVA</div>
+        <div class="pb" onclick="sPago('u','Transferencia',this)"><div class="pi">~</div>Transferencia +8% IVA</div>
+        <div class="pb" onclick="sPago('u','Hospital',this)"><div class="pi">H</div>Hospital</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-u-fact"><label>Numero de cuenta</label><input type="text" id="u-fact" placeholder="Numero de cuenta del hospital"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Unidad y paramedicos</div><div class="fcb">
+    <div class="f"><label>Unidad asignada</label><div class="ug" id="u-und"><div class="ub" onclick="sUnd('u','UM03',this)">UM03<span class="usub">Basica</span></div><div class="ub" onclick="sUnd('u','UM05',this)">UM05<span class="usub">Avanzada</span></div></div></div>
+    <div class="f"><label>Paramedicos a bordo</label>
+      <div class="par-grid" id="u-par">
+        <div class="par" onclick="tPar(this)"><div class="av">CR</div>Cristobal</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AL</div>Alfredo</div>
+        <div class="par" onclick="tPar(this)"><div class="av">FR</div>Francisco</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AB</div>Abigail</div>
+        <div class="par" onclick="tPar(this)"><div class="av">JU</div>Julio</div>
+        <div class="par" onclick="tPar(this)"><div class="av">IS</div>Isaac</div>
+        <div class="par" onclick="tPar(this)"><div class="av">DA</div>Dayra</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Observaciones</div><div class="fcb"><textarea id="u-obs" placeholder="Notas adicionales, indicaciones especiales..."></textarea></div></div>
+
+  <div class="wa-sec">
+    <button class="bgen" onclick="genMsg('U')">Vista previa - Enviar por WhatsApp</button>
+  </div>
+  <div id="wp-U" style="display:none;margin-top:12px;">
+    <div class="wa-box"><div class="wa-lbl">Previsualizar y editar <span>(puedes corregir antes de enviar)</span></div><textarea class="wa-ta" id="wt-U"></textarea></div>
+    <div class="wa-act"><button class="bwa bcp" onclick="copiar('U')">Copiar mensaje</button><button class="bwa bsn" onclick="enviar('U')">Abrir WhatsApp</button></div>
+    <button class="brst" onclick="reset('U')">Limpiar formulario</button>
+  </div>
+</div>
+
+<!-- TRASLADO -->
+<div class="sec T" id="sT">
+  <div class="sec-hdr"><span class="ico">+</span><div><div class="tit">TRASLADO</div><div class="sub">Coordinacion de traslado programado</div></div></div>
+
+  <div class="fc"><div class="fch">Fecha y hora</div><div class="fcb">
+    <div class="f"><label>Tipo de traslado</label>
+      <div class="tg">
+        <div class="tb" id="tt-hoy" onclick="setTipoFecha('hoy')">Traslado hoy</div>
+        <div class="tb" id="tt-prog" onclick="setTipoFecha('programado')">Programado</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-t-fecha-prog">
+      <label>Fecha programada</label>
+      <input type="date" id="t-fec">
+    </div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Tipo de traslado</div><div class="fcb">
+    <div class="f"><label>Clasificacion</label>
+      <div class="pgg" id="t-chips">
+        <div class="pc" onclick="sTipo(this,'Egreso')">Egreso</div><div class="pc" onclick="sTipo(this,'Estudio')">Estudio</div><div class="pc" onclick="sTipo(this,'Consulta')">Consulta</div><div class="pc" onclick="sTipo(this,'Sesiones')">Sesiones</div><div class="pc" onclick="sTipo(this,'Interhospitalario')">Interhospitalario</div><div class="pc" onclick="sTipo(this,'Foraneo')">Foraneo</div><div class="pc" onclick="sTipo(this,'Otro')">Otro</div>
+      </div>
+      <div class="cond" id="t-otro-box"><input type="text" id="t-otro" placeholder="Especificar tipo..."></div>
+    </div>
+    <div class="f2"><div class="f"><label>Origen</label><input type="text" id="t-ori" placeholder="Hospital, domicilio..."></div><div class="f"><label>Destino</label><input type="text" id="t-dst" placeholder="Nombre o direccion"></div></div>
+    <div class="f"><label>Tipo de traslado medico</label>
+      <div class="tg"><div class="tb" id="tm-b" onclick="sToggle('tm','b','ay')">Basico</div><div class="tb" id="tm-t" onclick="sToggle('tm','t','ay')">Terapia Intensiva</div></div>
+    </div>
+    <div class="f"><label>Motivo / Especificaciones</label><textarea id="t-esp" placeholder="Ej: Consulta con Dr. Garcia, tomografia de torax, quimioterapia sesion 3..."></textarea></div>
+  </div></div>
+
+  <div class="fc" id="fc-for" style="display:none"><div class="fch">Traslado foraneo</div><div class="fcb"><div class="f"><label>Kilometros (ida)</label><input type="number" id="t-km" placeholder="0" onchange="cT()"><span class="itag">Basico: $40/km | Terapia intensiva: $50/km | Urgencia: $55/km</span></div></div></div>
+
+  <div class="fc"><div class="fch">Tipo de servicio y logistica</div><div class="fcb">
+    <div class="f"><label>Recorrido</label>
+      <div class="tg"><div class="tb" id="trec-i" onclick="sToggle('trec','i','ay')">Solo ida</div><div class="tb" id="trec-iv" onclick="sToggle('trec','iv','ay')">Ida y vuelta</div></div>
+    </div>
+    <div class="f"><label>Indicaciones operativas</label><textarea id="t-indic" placeholder="Ej: Cita a las 11 en HRR, estar en HES a las 10:30..."></textarea></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Datos del paciente</div><div class="fcb">
+    <div class="f">
+      <label>Nombre completo</label>
+      <div class="px-wrap">
+        <input type="text" id="t-nom" placeholder="Escribir nombre para buscar..." oninput="buscarPx('t-nom','t-sugg','T')" autocomplete="off">
+        <div class="px-sugg" id="t-sugg"></div>
+      </div>
+      <div class="px-status" id="t-px-status"></div>
+    </div>
+    <div class="f2"><div class="f"><label>Edad</label><input type="number" id="t-edad" placeholder="Se calcula con F. Nac."></div><div class="f"><label>Peso (kg)</label><input type="number" id="t-peso" placeholder="kg"></div></div>
+    <div class="f"><label>Fecha de nacimiento</label><input type="date" id="t-fnac" onchange="calcEdad('t-fnac','t-edad')"></div>
+    <div class="f"><label>Ubicacion del paciente</label><input type="text" id="t-ubpx" placeholder="Cuarto, piso, area..."></div>
+    <div class="f"><label>Diagnostico</label><input type="text" id="t-diag" placeholder="Diagnostico principal"></div>
+    <button class="btn-save-px" onclick="guardarPx('T')">+ Guardar paciente en base de datos</button>
+    <div class="f"><label>Enfermedades cronicas</label>
+      <div class="cg" id="tcron">
+        <div class="cc" onclick="cChip(this)">Diabetes</div><div class="cc" onclick="cChip(this)">HTA</div><div class="cc" onclick="cChip(this)">EPOC</div><div class="cc" onclick="cChip(this)">Cardiopatia</div><div class="cc" onclick="cChip(this)">Renal</div><div class="cc" onclick="cChip(this)">Oncologico</div><div class="cc" onclick="cChipOtro(this,'tcron-o')">Otro</div>
+      </div>
+      <div class="cond" id="tcron-o"><input type="text" id="tcron-otxt" placeholder="Especificar enfermedad cronica..."></div>
+    </div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Equipo medico requerido</div><div class="fcb" id="teq">
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Oxigeno"><label class="eq-lbl">Oxigeno</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Ventilador"><label class="eq-lbl">Ventilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Bombas de infusion"><label class="eq-lbl">Bombas de infusion</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Monitor cardiaco"><label class="eq-lbl">Monitor cardiaco</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Desfibrilador"><label class="eq-lbl">Desfibrilador</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Aspirador de secreciones"><label class="eq-lbl">Aspirador de secreciones</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Incubadora neonatal"><label class="eq-lbl">Incubadora neonatal</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="Colarin cervical"><label class="eq-lbl">Colarin cervical</label><input class="eq-qty" type="number" min="1" value="1"></div>
+    <div class="eq-item"><input class="eq-chk" type="checkbox" onchange="tEq(this)" data-n="otro"><label class="eq-lbl">Otro</label><input class="eq-qty" type="text" placeholder="Describir..."></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Medico tratante (opcional)</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre del medico</label><input type="text" id="t-medn" placeholder="Dr. Nombre"></div><div class="f"><label>Telefono</label><input type="tel" id="t-medt" placeholder="Numero"></div></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Contacto familiar</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre</label><input type="text" id="t-famn" placeholder="Nombre"></div><div class="f"><label>Parentesco</label><input type="text" id="t-famp" placeholder="Ej: Hijo, esposa..."></div></div>
+    <div class="f"><label>Telefono</label><input type="tel" id="t-famt" placeholder="Numero"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Cotizacion</div><div class="fcb">
+    <div class="f"><label>Tarifa base</label>
+      <select id="t-tar" onchange="cT()">
+        <option value="">-- Seleccionar --</option>
+        <option value="1300">Traslado sencillo  -  $1,300</option>
+        <option value="900">Taxi sanitario (no urgencia)  -  $900</option>
+        <option value="1800">Traslado completo / estudios  -  $1,800</option>
+        <option value="3500">Terapia intensiva  -  $3,500</option>
+        <option value="3500b">Neonato con incubadora  -  $3,500</option>
+        <option value="for">Foraneo (calculo por km)</option>
+      </select>
+    </div>
+    <div class="f" id="t-km-campo" style="display:none"><label>Kilometros</label><input type="number" id="t-km2" placeholder="0" onchange="cT()"><span class="itag">Basico $40/km | Terapia intensiva $50/km</span></div>
+    <div class="f"><label>Horas adicionales (despues de 1 hr cortesia)</label><input type="number" id="t-hex" min="0" value="0" onchange="cT()"><span class="itag">$600 por hora o fraccion</span></div>
+    <div class="ctz"><div class="ctz-t">Desglose</div>
+      <div class="pr"><span class="pl">Tarifa base</span><span class="pv" id="t-pb">$0</span></div>
+      <div class="pr"><span class="pl">Tiempo extra</span><span class="pv" id="t-pe">$0</span></div>
+      <div class="pr" id="t-ivr" style="display:none"><span class="pl">IVA 8%</span><span class="pv" id="t-pi"></span></div>
+      <div class="ptot"><span class="ptot-l">TOTAL</span><span class="ptot-v" id="t-tot">$0</span></div>
+    </div>
+    <div class="f"><label>Precio manual (opcional)</label><input type="number" id="t-pm" placeholder="Ingresar monto"></div>
+    <div class="f"><label>Metodo de pago</label>
+      <div class="pg" id="t-pg">
+        <div class="pb" onclick="sPago('t','Efectivo',this)"><div class="pi">$</div>Efectivo</div>
+        <div class="pb" onclick="sPago('t','Tarjeta',this)"><div class="pi">#</div>Tarjeta +8% IVA</div>
+        <div class="pb" onclick="sPago('t','Transferencia',this)"><div class="pi">~</div>Transferencia +8% IVA</div>
+        <div class="pb" onclick="sPago('t','Hospital',this)"><div class="pi">H</div>Hospital</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-t-fact"><label>Numero de cuenta</label><input type="text" id="t-fact" placeholder="Numero de cuenta del hospital"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Unidad y paramedicos</div><div class="fcb">
+    <div class="f"><label>Unidad asignada</label><div class="ug" id="t-und"><div class="ub" onclick="sUnd('t','UM03',this)">UM03<span class="usub">Basica</span></div><div class="ub" onclick="sUnd('t','UM05',this)">UM05<span class="usub">Avanzada</span></div></div></div>
+    <div class="f"><label>Paramedicos a bordo</label>
+      <div class="par-grid" id="t-par">
+        <div class="par" onclick="tPar(this)"><div class="av">CR</div>Cristobal</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AL</div>Alfredo</div>
+        <div class="par" onclick="tPar(this)"><div class="av">FR</div>Francisco</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AB</div>Abigail</div>
+        <div class="par" onclick="tPar(this)"><div class="av">JU</div>Julio</div>
+        <div class="par" onclick="tPar(this)"><div class="av">IS</div>Isaac</div>
+        <div class="par" onclick="tPar(this)"><div class="av">DA</div>Dayra</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Notas</div><div class="fcb"><textarea id="t-notas" placeholder="Indicaciones especiales, condiciones del traslado..."></textarea></div></div>
+
+  <div class="wa-sec"><button class="bgen" onclick="genMsg('T')">Vista previa - Enviar por WhatsApp</button></div>
+  <div id="wp-T" style="display:none;margin-top:12px;">
+    <div class="wa-box"><div class="wa-lbl">Previsualizar y editar <span>(puedes corregir antes de enviar)</span></div><textarea class="wa-ta" id="wt-T"></textarea></div>
+    <div class="wa-act"><button class="bwa bcp" onclick="copiar('T')">Copiar mensaje</button><button class="bwa bsn" onclick="enviar('T')">Abrir WhatsApp</button></div>
+    <button class="brst" onclick="reset('T')">Limpiar formulario</button>
+  </div>
+</div>
+
+<!-- EVENTO -->
+<div class="sec E" id="sE">
+  <div class="sec-hdr"><span class="ico">*</span><div><div class="tit">EVENTO</div><div class="sub">Cobertura medica de evento</div></div></div>
+
+  <div class="fc"><div class="fch">Datos del evento</div><div class="fcb">
+    <div class="f"><label>Nombre / Tipo de evento</label><input type="text" id="e-nom" placeholder="Ej: Posada, evento corporativo, maraton..."></div>
+    <div class="f"><label>Lugar / Domicilio</label><input type="text" id="e-lug" placeholder="Direccion completa"></div>
+    <div class="dtr"><div class="f"><label>Fecha</label><input type="date" id="e-fec"></div><div class="f"><label>Hora de inicio</label><input type="time" id="e-hor"></div><div class="f"><label>Hora de termino</label><input type="time" id="e-hor-fin"></div></div>
+    <div class="f"><label>A cargo de</label><input type="text" id="e-car" placeholder="Nombre del responsable del evento"></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Contacto del cliente</div><div class="fcb">
+    <div class="f2"><div class="f"><label>Nombre</label><input type="text" id="e-cn" placeholder="Nombre"></div><div class="f"><label>Telefono</label><input type="tel" id="e-ct" placeholder="Numero"></div></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Cotizacion</div><div class="fcb">
+    <div class="f"><label>Horas de cobertura</label><input type="number" id="e-hs" min="1" value="1" onchange="cE()"><span class="itag">$650 por hora — posadas, picnic, mantenimientos</span></div>
+    <div class="ctz"><div class="ctz-t">Desglose</div>
+      <div class="pr"><span class="pl">Horas de cobertura</span><span class="pv" id="e-ph">$650</span></div>
+      <div class="pr" id="e-ivr" style="display:none"><span class="pl">IVA 8% (tarjeta)</span><span class="pv" id="e-pi"></span></div>
+      <div class="ptot"><span class="ptot-l">TOTAL</span><span class="ptot-v" id="e-tot">$650</span></div>
+    </div>
+    <div class="f"><label>Precio manual (opcional)</label><input type="number" id="e-pm" placeholder="Ingresar monto"></div>
+    <div class="f"><label>Metodo de pago</label>
+      <div class="pg" id="e-pg">
+        <div class="pb" onclick="sPago('e','Efectivo',this)"><div class="pi">$</div>Efectivo</div>
+        <div class="pb" onclick="sPago('e','Tarjeta',this)"><div class="pi">#</div>Tarjeta +8% IVA</div>
+        <div class="pb" onclick="sPago('e','Transferencia',this)"><div class="pi">~</div>Transferencia +8% IVA</div>
+        <div class="pb" onclick="sPago('e','Hospital',this)"><div class="pi">H</div>Hospital</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-e-fact"><label>Numero de cuenta / Razon social</label><input type="text" id="e-fact" placeholder="Datos de facturacion"></div>
+    <div class="f"><label>Responsable de pago</label><input type="text" id="e-qui" placeholder="Empresa, persona, hospital..."></div>
+  </div></div>
+
+  <div class="fc"><div class="fch">Unidad y paramedicos</div><div class="fcb">
+    <div class="f"><label>Unidades asignadas (puedes seleccionar ambas)</label>
+      <div class="ug" id="e-und">
+        <div class="ub" onclick="sUndEvento('UM03',this)">UM03<span class="usub">Basica</span></div>
+        <div class="ub" onclick="sUndEvento('UM05',this)">UM05<span class="usub">Avanzada</span></div>
+      </div>
+    </div>
+    <div class="f" id="e-par-um03-sec" style="display:none">
+      <label>Paramedicos UM03</label>
+      <div class="par-grid" id="e-par-um03">
+        <div class="par" onclick="tPar(this)"><div class="av">CR</div>Cristobal</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AL</div>Alfredo</div>
+        <div class="par" onclick="tPar(this)"><div class="av">FR</div>Francisco</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AB</div>Abigail</div>
+        <div class="par" onclick="tPar(this)"><div class="av">JU</div>Julio</div>
+        <div class="par" onclick="tPar(this)"><div class="av">IS</div>Isaac</div>
+        <div class="par" onclick="tPar(this)"><div class="av">DA</div>Dayra</div>
+      </div>
+    </div>
+    <div class="f" id="e-par-um05-sec" style="display:none">
+      <label>Paramedicos UM05</label>
+      <div class="par-grid" id="e-par-um05">
+        <div class="par" onclick="tPar(this)"><div class="av">CR</div>Cristobal</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AL</div>Alfredo</div>
+        <div class="par" onclick="tPar(this)"><div class="av">FR</div>Francisco</div>
+        <div class="par" onclick="tPar(this)"><div class="av">AB</div>Abigail</div>
+        <div class="par" onclick="tPar(this)"><div class="av">JU</div>Julio</div>
+        <div class="par" onclick="tPar(this)"><div class="av">IS</div>Isaac</div>
+        <div class="par" onclick="tPar(this)"><div class="av">DA</div>Dayra</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="wa-sec"><button class="bgen" onclick="genMsg('E')">Vista previa - Enviar por WhatsApp</button></div>
+  <div id="wp-E" style="display:none;margin-top:12px;">
+    <div class="wa-box"><div class="wa-lbl">Previsualizar y editar <span>(puedes corregir antes de enviar)</span></div><textarea class="wa-ta" id="wt-E"></textarea></div>
+    <div class="wa-act"><button class="bwa bcp" onclick="copiar('E')">Copiar mensaje</button><button class="bwa bsn" onclick="enviar('E')">Abrir WhatsApp</button></div>
+    <button class="brst" onclick="reset('E')">Limpiar formulario</button>
+  </div>
+</div>
+
+<!-- ESTUDIOS -->
+<div class="sec I" id="sI">
+  <div class="sec-hdr"><span class="ico">+</span><div><div class="tit">PAQUETES DE ESTUDIOS</div><div class="sub">Imagenologia — Hospital Santander</div></div></div>
+
+  <!-- SEMAFORO -->
+  <div id="i-semaforo" class="semaforo sem-amarillo" style="display:none"></div>
+
+  <!-- CATALOGO -->
+  <div class="fc"><div class="fch">Seleccionar estudio</div><div class="fcb" id="i-catalogo">
+    <div class="estudio-item" onclick="selEstudio(this,'TAC Simple','TAC Simple c/Ambulancia',2300,['tac-simple'])">
+      <div class="estudio-nom">TAC Simple <span style="color:#888;font-size:12px;">Craneo</span></div>
+      <div class="estudio-precio">$2,300</div>
+    </div>
+    <div class="estudio-item" onclick="selEstudio(this,'TAC Contrastado','TAC Contrastado c/Ambulancia',2900,['tac-cont','creatinina'])">
+      <div class="estudio-nom">TAC Contrastado <span style="color:#888;font-size:12px;">Craneo</span></div>
+      <div class="estudio-precio">$2,900</div>
+    </div>
+    <div class="estudio-item" onclick="selEstudio(this,'TAC Simple Abdomen / UroTAC','TAC Simple Abdomen o UroTAC c/Ambulancia',2800,['tac-simple','ayuno'])">
+      <div class="estudio-nom">TAC Simple Abdomen / UroTAC</div>
+      <div class="estudio-precio">$2,800</div>
+    </div>
+    <div class="estudio-item" onclick="selEstudio(this,'TAC Contrastado Abdomen / UroTAC','TAC Contrastado Abdomen o UroTAC c/Ambulancia',4780,['tac-cont','creatinina','ayuno'])">
+      <div class="estudio-nom">TAC Contrastado Abdomen / UroTAC</div>
+      <div class="estudio-precio">$4,780</div>
+    </div>
+    <div class="estudio-item" onclick="selEstudio(this,'Resonancia Simple','Resonancia Simple c/Ambulancia',3450,['rmn','metales'])">
+      <div class="estudio-nom">Resonancia Magnetica Simple</div>
+      <div class="estudio-precio">$3,450</div>
+    </div>
+    <div class="estudio-item" onclick="selEstudio(this,'Resonancia Simple y Contrastada','Resonancia Simple y Contrastado c/Ambulancia',4250,['rmn','metales','creatinina'])">
+      <div class="estudio-nom">Resonancia Simple y Contrastada</div>
+      <div class="estudio-precio">$4,250</div>
+    </div>
+  </div></div>
+
+  <!-- ESTUDIO SELECCIONADO + REGION -->
+  <div class="fc" id="i-sel-card" style="display:none">
+    <div class="fch">Estudio seleccionado</div>
+    <div class="fcb">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span id="i-sel-nom" style="font-size:15px;font-weight:700;color:#7ab0ff;"></span>
+        <span id="i-sel-precio" style="font-size:18px;font-weight:800;color:#a0a0ff;"></span>
+      </div>
+      <div class="f">
+        <label>Region anatomica</label>
+        <select id="i-region" onchange="S.i.region=this.value">
+          <option value="">-- Seleccionar region --</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Especificaciones adicionales (opcional)</label>
+        <input type="text" id="i-espec" placeholder="Ej: cortes finos, protocolo especifico...">
+      </div>
+    </div>
+  </div>
+
+  <!-- REQUISITOS -->
+  <div class="fc" id="i-req-card" style="display:none">
+    <div class="fch">Requisitos medicos previos</div>
+    <div class="fcb" id="i-req-lista"></div>
+  </div>
+
+  <!-- DOCUMENTACION CHECKLIST -->
+  <div class="fc"><div class="fch">Documentacion requerida</div><div class="fcb">
+    <div class="checklist-item" id="chk-ine" onclick="tChk(this)"><div class="chk-box"></div><span class="chk-lbl">INE o identificacion oficial del paciente</span></div>
+    <div class="checklist-item" id="chk-orden" onclick="tChk(this)"><div class="chk-box">&#10003;</div><span class="chk-lbl">Orden medica del estudio</span></div>
+    <div class="checklist-item" id="chk-medico" onclick="tChk(this)"><div class="chk-box"></div><span class="chk-lbl">Nombre del medico tratante / solicitante</span></div>
+    <div class="checklist-item" id="chk-creat" onclick="tChk(this)" style="display:none"><div class="chk-box"></div><span class="chk-lbl">Resultado de creatinina (max 3 dias de antiguedad)</span></div>
+  </div></div>
+
+  <!-- CLASIFICACION Y FECHA/HORA -->
+  <div class="fc"><div class="fch">Programacion del estudio</div><div class="fcb">
+    <div class="f"><label>Clasificacion</label>
+      <div class="tg">
+        <div class="tb" id="icl-prog" onclick="setClasif('Programado')">Programado</div>
+        <div class="tb" id="icl-urg" onclick="setClasif('Urgente')">URGENTE</div>
+      </div>
+    </div>
+    <div class="f2">
+      <div class="f"><label>Fecha del estudio</label><input type="date" id="i-fecha"></div>
+      <div class="f"><label>Hora programada</label><input type="time" id="i-hora"></div>
+    </div>
+    <div class="f"><label>Medico tratante / solicitante</label><input type="text" id="i-medico" placeholder="Nombre del medico"></div>
+  </div></div>
+
+  <!-- DATOS DEL PACIENTE -->
+  <div class="fc"><div class="fch">Datos del paciente</div><div class="fcb">
+    <div class="f">
+      <label>Nombre completo</label>
+      <div class="px-wrap">
+        <input type="text" id="i-nom" placeholder="Escribir nombre para buscar..." oninput="buscarPx('i-nom','i-sugg','I')" autocomplete="off">
+        <div class="px-sugg" id="i-sugg"></div>
+      </div>
+      <div class="px-status" id="i-px-status"></div>
+    </div>
+    <div class="f2">
+      <div class="f"><label>Edad</label><input type="number" id="i-edad" placeholder="Se calcula con F. Nac."></div>
+      <div class="f"><label>Peso (kg)</label><input type="number" id="i-peso" placeholder="kg"></div>
+    </div>
+    <div class="f"><label>Fecha de nacimiento</label><input type="date" id="i-fnac" onchange="calcEdad('i-fnac','i-edad')"></div>
+    <div class="f"><label>Diagnostico</label><input type="text" id="i-diag" placeholder="Diagnostico principal"></div>
+    <div class="f"><label>Enfermedades cronicas</label>
+      <div class="cg" id="icron">
+        <div class="cc" onclick="cChip(this)">Diabetes</div>
+        <div class="cc" onclick="cChip(this)">HTA</div>
+        <div class="cc" onclick="cChip(this)">EPOC</div>
+        <div class="cc" onclick="cChip(this)">Cardiopatia</div>
+        <div class="cc" onclick="cChip(this)">Renal</div>
+        <div class="cc" onclick="cChip(this)">Oncologico</div>
+        <div class="cc" onclick="cChipOtro(this,'icron-o')">Otro</div>
+      </div>
+      <div class="cond" id="icron-o"><input type="text" id="icron-otxt" placeholder="Especificar..."></div>
+    </div>
+    <button class="btn-save-px" onclick="guardarPx('I')">+ Guardar paciente en base de datos</button>
+  </div></div>
+
+  <!-- LUGAR DE ORIGEN -->
+  <div class="fc"><div class="fch">Lugar de origen</div><div class="fcb">
+    <div class="f"><label>Tipo de origen</label>
+      <div class="tg">
+        <div class="origen-btn" id="ior-hosp" onclick="setOrigen('hospital')">Hospital</div>
+        <div class="origen-btn" id="ior-dom" onclick="setOrigen('domicilio')">Domicilio</div>
+      </div>
+    </div>
+    <div class="cond" id="cd-ior-hosp">
+      <div class="f" style="margin-bottom:8px;"><label>Hospital de referencia</label><input type="text" id="i-hosp-ref" placeholder="Nombre del hospital"></div>
+      <div class="f"><label>Numero de habitacion / area</label><input type="text" id="i-hosp-hab" placeholder="Habitacion, piso, area..."></div>
+    </div>
+    <div class="cond" id="cd-ior-dom">
+      <div class="f" style="margin-bottom:8px;"><label>Calle y numero</label><input type="text" id="i-dom-calle" placeholder="Calle y numero exterior"></div>
+      <div class="f2" style="margin-bottom:8px;">
+        <div class="f"><label>Colonia</label><input type="text" id="i-dom-col" placeholder="Colonia"></div>
+        <div class="f"><label>Codigo Postal *</label><input type="text" id="i-dom-cp" placeholder="CP (obligatorio)"></div>
+      </div>
+      <div class="f2" style="margin-bottom:8px;">
+        <div class="f"><label>Municipio</label><input type="text" id="i-dom-mun" placeholder="Municipio"></div>
+        <div class="f"><label>Referencias</label><input type="text" id="i-dom-ref" placeholder="Referencias adicionales"></div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- METODO DE PAGO -->
+  <div class="fc"><div class="fch">Metodo de pago</div><div class="fcb">
+    <div class="pg" id="i-pg">
+      <div class="pb" onclick="sPago('i','Efectivo',this)"><div class="pi">$</div>Efectivo</div>
+      <div class="pb" onclick="sPago('i','Tarjeta',this)"><div class="pi">#</div>Tarjeta +8% IVA</div>
+      <div class="pb" onclick="sPago('i','Transferencia',this)"><div class="pi">~</div>Transferencia +8% IVA</div>
+      <div class="pb" onclick="sPago('i','Hospital',this)"><div class="pi">H</div>Hospital</div>
+    </div>
+    <div class="cond" id="cd-i-fact"><label>Numero de cuenta</label><input type="text" id="i-fact" placeholder="Numero de cuenta del hospital"></div>
+  </div></div>
+
+  <!-- CANALES DE CONTACTO -->
+  <div class="fc"><div class="fch">Canales de contacto — Hospital Santander</div><div class="fcb">
+    <div class="canal-item"><div class="canal-hora">7:00 am — 7:00 pm</div>Cotizaciones y citas RMN programadas: <strong>Call Center Hospital Santander</strong></div>
+    <div class="canal-item"><div class="canal-hora">7:00 pm — 7:00 am</div>Cotizaciones fuera de horario: <strong>Consulta Externa / Servicios Clinicos Urgencias</strong></div>
+    <div class="canal-item"><div class="canal-hora">Costos preferenciales</div>Paquete con ambulancia: <strong>Lic. Isabel (HES)</strong></div>
+    <div class="canal-item"><div class="canal-hora">ECO / USG — 8:00 am a 7:00 pm</div>Citas programadas: <strong>Interpretacion HES</strong></div>
+    <div class="canal-item"><div class="canal-hora">Urgencias sin cita</div>Coordinacion directa con enlace Hospital Santander</div>
+    <div class="canal-item"><div class="canal-hora">Resultados e interpretaciones</div>Enviados a: <strong>ambulancias.sten@gmail.com</strong><br>Lab: personal de Laboratorio HES<br>Interpretaciones 8am-8pm: Interpretacion HES<br>Turno nocturno: Consulta Externa</div>
+  </div></div>
+
+  <!-- VISTA PREVIA -->
+  <div class="wa-sec">
+    <button class="bgen" style="background:#2980B9;color:#fff;" onclick="genMsg('I')">Vista previa - Enviar por WhatsApp</button>
+  </div>
+  <div id="wp-I" style="display:none;margin-top:12px;">
+    <div class="wa-box"><div class="wa-lbl">Previsualizar y editar <span>(puedes corregir antes de enviar)</span></div><textarea class="wa-ta" id="wt-I"></textarea></div>
+    <div class="wa-act"><button class="bwa bcp" onclick="copiar('I')">Copiar mensaje</button><button class="bwa bsn" onclick="enviar('I')">Abrir WhatsApp</button></div>
+    <button class="brst" onclick="reset('I')">Limpiar formulario</button>
+  </div>
+</div>
+
+<script>
+const S={u:{p:'',u:''},t:{p:'',u:'',tp:'',tipoFecha:''},e:{p:'',u:''},i:{p:'',estudio:'',precio:0,clasif:'',origen:'',region:''}};
+function clk(){const n=new Date();document.getElementById('rl').innerHTML=n.toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'})+'<br>'+n.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});}
+clk();setInterval(clk,1000);
+function sDef(){const n=new Date();const ds=n.toISOString().split('T')[0];const ts=n.toTimeString().slice(0,5);['u-fec','t-fec','e-fec'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=ds;});['u-hor','t-hor','e-hor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=ts;});}
+function calcEdad(fnacId,edadId){
+  const val=document.getElementById(fnacId).value;
+  if(!val)return;
+  const hoy=new Date();
+  const nac=new Date(val);
+  let edad=hoy.getFullYear()-nac.getFullYear();
+  const m=hoy.getMonth()-nac.getMonth();
+  if(m<0||(m===0&&hoy.getDate()<nac.getDate()))edad--;
+  if(edad>=0&&edad<120)document.getElementById(edadId).value=edad;
+}
+function horaActual(){const n=new Date();return n.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:true});}
+function sTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));document.querySelector('.tab.'+t).classList.add('active');document.getElementById('s'+t).classList.add('on');window.scrollTo(0,0);}
+function sToggle(g,v,c){document.querySelectorAll('[id^="'+g+'-"]').forEach(el=>el.classList.remove('ag','ar','ay'));document.getElementById(g+'-'+v).classList.add(c);if(g==='uc')document.getElementById('cd-incon').classList.toggle('on',v==='i');if(g==='ul')document.getElementById('cd-les').classList.toggle('on',v==='si');}
+function cChip(el){el.classList.toggle('on');}
+function cChipOtro(el,boxId){el.classList.toggle('on');document.getElementById(boxId).classList.toggle('on',el.classList.contains('on'));}
+function tEq(cb){cb.closest('.eq-item').classList.toggle('on',cb.checked);}
+function tPar(el){el.classList.toggle('on');}
+function sTipo(el,tp){document.querySelectorAll('#t-chips .pc').forEach(c=>c.classList.remove('on'));el.classList.add('on');S.t.tp=tp;document.getElementById('t-otro-box').classList.toggle('on',tp==='Otro');document.getElementById('fc-for').style.display=tp==='Foraneo'?'block':'none';}
+function setTipoFecha(tipo){
+  S.t.tipoFecha=tipo;
+  document.getElementById('tt-hoy').classList.toggle('ay',tipo==='hoy');
+  document.getElementById('tt-prog').classList.toggle('ay',tipo==='programado');
+  document.getElementById('cd-t-fecha-prog').classList.toggle('on',tipo==='programado');
+  if(tipo==='hoy'){
+    // Limpiar fecha para que se tome en tiempo real al generar
+    document.getElementById('t-fec').value='';
+  }
+}
+function sPago(sec,tipo,el){S[sec].p=tipo;document.querySelectorAll('#'+sec+'-pg .pb').forEach(b=>b.classList.remove('on'));el.classList.add('on');const cf=document.getElementById('cd-'+sec+'-fact');if(cf)cf.classList.toggle('on',tipo==='Hospital');if(sec==='u')cU();if(sec==='t')cT();if(sec==='e')cE();}
+function sUnd(sec,u,el){S[sec].u=u;document.querySelectorAll('#'+sec+'-und .ub').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+
+function sUndEvento(u,el){
+  el.classList.toggle('on');
+  const sel=Array.from(document.querySelectorAll('#e-und .ub.on')).map(b=>b.firstChild.textContent.trim());
+  S.e.u=sel.join(' + ')||'';
+  document.getElementById('e-par-um03-sec').style.display=sel.includes('UM03')?'flex':'none';
+  document.getElementById('e-par-um05-sec').style.display=sel.includes('UM05')?'flex':'none';
+}
+
+// ESTUDIOS
+const REGIONES = {
+  'tac-simple': ['Craneo','Cerebro','Senos paranasales','Orbitas','Huesos temporales','Macizo facial','Mandibula','Cuello','Columna cervical','Columna toracica','Columna lumbar','Torax','Pulmones','Abdomen','Pelvis','Abdomen y pelvis','Urotomografia simple','Cadera','Hombro','Codo','Muneca','Mano','Rodilla','Tobillo','Pie','Humero','Antebrazo','Femur','Tibia y perone'],
+  'tac-cont': ['Craneo con contraste','Cerebro con contraste','Senos paranasales con contraste','Orbitas con contraste','Cuello con contraste','Torax con contraste','AngioTAC de torax','Abdomen con contraste','Pelvis con contraste','Abdomen y pelvis con contraste','UroTAC','Higado','Pancreas','Rinones','Suprarrenales','Vasos sanguineos (AngioTAC)','Aorta','Extremidades con contraste','Columna con contraste'],
+  'rmn-simple': ['Cerebro','Hipofisis','Orbitas','Senos paranasales','Oido interno','Cuello','Articulacion temporomandibular (ATM)','Columna cervical','Columna toracica','Columna lumbar','Columna sacrococcigea','Plexo braquial','Torax','Abdomen','Pelvis','Higado','Vias biliares (Colangio-RM)','Pancreas','Rinones','Prostata','Utero','Ovarios','Cadera','Hombro','Codo','Muneca','Mano','Rodilla','Tobillo','Pie','Muslo','Pierna'],
+  'rmn-cont': ['Cerebro con contraste','Hipofisis con contraste','Orbitas con contraste','Cuello con contraste','Columna cervical con contraste','Columna toracica con contraste','Columna lumbar con contraste','Medula espinal con contraste','Torax con contraste','Abdomen con contraste','Pelvis con contraste','Higado con contraste','Pancreas con contraste','Rinones con contraste','Prostata con contraste','Utero con contraste','Ovarios con contraste','Mama con contraste','Angio-RM','Hombro con contraste','Cadera con contraste','Rodilla con contraste','Otras articulaciones con contraste']
+};
+
+// Mapeo estudio → clave de región
+const ESTUDIO_REGION = {
+  'TAC Simple': 'tac-simple',
+  'TAC Contrastado': 'tac-cont',
+  'TAC Simple Abdomen / UroTAC': 'tac-simple',
+  'TAC Contrastado Abdomen / UroTAC': 'tac-cont',
+  'Resonancia Simple': 'rmn-simple',
+  'Resonancia Simple y Contrastada': 'rmn-cont'
+};
+const REQUISITOS={
+  'tac-simple':{texto:'Ayuno minimo de 4 horas'},
+  'ayuno':{texto:'Ayuno minimo de 8 horas'},
+  'creatinina':{texto:'Resultado de creatinina con antiguedad maxima de 3 dias'},
+  'rmn':{texto:'No portar objetos metalicos (aretes, piercings, implantes metalicos)'},
+  'metales':{texto:'Informar si tiene marcapasos, protesis metalicas o clips vasculares'}
+};
+
+function selEstudio(el,clave,nombre,precio,reqs){
+  document.querySelectorAll('.estudio-item').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  S.i.estudio=nombre;S.i.precio=precio;S.i.region='';
+  document.getElementById('i-sel-nom').textContent=nombre;
+  document.getElementById('i-sel-precio').textContent='$'+precio.toLocaleString('es-MX');
+  document.getElementById('i-sel-card').style.display='block';
+  // Poblar selector de region anatomica
+  const regSel=document.getElementById('i-region');
+  regSel.innerHTML='<option value="">-- Seleccionar region --</option>';
+  const regKey=ESTUDIO_REGION[clave]||'tac-simple';
+  (REGIONES[regKey]||[]).forEach(r=>{
+    const opt=document.createElement('option');
+    opt.value=r;opt.textContent=r;
+    regSel.appendChild(opt);
+  });
+  regSel.value='';
+  // Requisitos
+  const lista=document.getElementById('i-req-lista');
+  lista.innerHTML='';
+  reqs.forEach(r=>{
+    if(REQUISITOS[r]){
+      const d=document.createElement('div');
+      d.className='req-item';
+      d.innerHTML='<div class="req-dot"></div><span>'+REQUISITOS[r].texto+'</span>';
+      lista.appendChild(d);
+    }
+  });
+  document.getElementById('i-req-card').style.display='block';
+  document.getElementById('chk-creat').style.display=reqs.includes('creatinina')?'flex':'none';
+  actualizarSemaforo();
+}
+
+function tChk(el){
+  el.classList.toggle('on');
+  const box=el.querySelector('.chk-box');
+  box.textContent=el.classList.contains('on')?'✓':'';
+  actualizarSemaforo();
+}
+
+function setClasif(val){
+  S.i.clasif=val;
+  document.getElementById('icl-prog').classList.toggle('ay',val==='Programado');
+  document.getElementById('icl-urg').classList.toggle('ar',val==='Urgente');
+  document.getElementById('icl-prog').classList.toggle('ar',false);
+  document.getElementById('icl-urg').classList.toggle('ay',false);
+}
+
+function setOrigen(val){
+  S.i.origen=val;
+  document.querySelectorAll('.origen-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById(val==='hospital'?'ior-hosp':'ior-dom').classList.add('on');
+  document.getElementById('cd-ior-hosp').classList.toggle('on',val==='hospital');
+  document.getElementById('cd-ior-dom').classList.toggle('on',val==='domicilio');
+}
+
+function actualizarSemaforo(){
+  const sem=document.getElementById('i-semaforo');
+  if(!S.i.estudio){sem.style.display='none';return;}
+  const chks=document.querySelectorAll('.checklist-item:not([style*="display: none"])');
+  const total=chks.length;
+  const marcados=document.querySelectorAll('.checklist-item.on:not([style*="display: none"])').length;
+  sem.style.display='flex';
+  if(marcados===total){
+    sem.className='semaforo sem-verde';
+    sem.textContent='✓ Documentacion completa — Listo para programar';
+  } else if(marcados>0){
+    sem.className='semaforo sem-amarillo';
+    sem.textContent='⚠ Documentacion incompleta — '+(total-marcados)+' pendiente(s)';
+  } else {
+    sem.className='semaforo sem-rojo';
+    sem.textContent='✗ Sin documentacion — No apto para programar';
+  }
+}
+
+function bI(){
+  const nom=gv('i-nom');
+  const clasif=S.i.clasif;
+  const urgente=clasif==='Urgente';
+  const cron=gChips('icron','icron-otxt');
+  let m='AMBULANCIAS STEN\n';
+  m+='Servicio: ESTUDIO DE IMAGENOLOGIA\n';
+  if(urgente) m+='*** URGENTE ***\n';
+  m+=ln('Fecha del estudio',gF('i-fecha'));
+  m+=ln('Hora programada',go('i-hora'));
+  m+='Hora de envio: '+horaActual()+'\n';
+  m+=blk('Estudio solicitado');
+  if(S.i.estudio) m+='Estudio: '+S.i.estudio+'\n';
+  if(gv('i-region')) m+='Region: '+gv('i-region')+'\n';
+  if(go('i-espec')) m+='Especificaciones: '+gv('i-espec')+'\n';
+  if(S.i.precio) m+='Costo: $'+S.i.precio.toLocaleString('es-MX')+' MXN\n';
+  if(clasif) m+='Clasificacion: '+clasif+'\n';
+  m+=ln('Medico solicitante',go('i-medico'));
+  m+=blk('Paciente');
+  m+=ln('Nombre',go('i-nom'));
+  if(go('i-edad')) m+='Edad: '+gv('i-edad')+' años\n';
+  if(go('i-peso')) m+='Peso: '+gv('i-peso')+' kg\n';
+  m+=ln('Fecha de nacimiento',gF('i-fnac'));
+  m+=ln('Diagnostico',go('i-diag'));
+  if(cron) m+='Enf. cronicas: '+cron+'\n';
+  m+=blk('Lugar de origen');
+  if(S.i.origen==='hospital'){
+    m+=ln('Hospital',go('i-hosp-ref'));
+    m+=ln('Habitacion / Area',go('i-hosp-hab'));
+  } else if(S.i.origen==='domicilio'){
+    m+=ln('Calle',go('i-dom-calle'));
+    m+=ln('Colonia',go('i-dom-col'));
+    m+=ln('CP',go('i-dom-cp'));
+    m+=ln('Municipio',go('i-dom-mun'));
+    m+=ln('Referencias',go('i-dom-ref'));
+  }
+  m+=blk('Documentacion');
+  const docItems=[
+    {id:'chk-ine',lbl:'INE / Identificacion'},
+    {id:'chk-orden',lbl:'Orden medica'},
+    {id:'chk-medico',lbl:'Medico tratante'},
+    {id:'chk-creat',lbl:'Creatinina'}
+  ];
+  docItems.forEach(d=>{
+    const el=document.getElementById(d.id);
+    if(el&&el.style.display!=='none'){
+      const ok=el.classList.contains('on');
+      m+=(ok?'[OK] ':'[PENDIENTE] ')+d.lbl+'\n';
+    }
+  });
+  m+=blk('Pago');
+  m+='Total: '+gPrecio('i')+'\n';
+  const pl=pagoLabel('i');
+  if(pl) m+='Metodo de pago: '+pl+'\n';
+  if(S.i.p==='Hospital'&&go('i-fact')) m+='No. cuenta: '+gv('i-fact')+'\n';
+  m+='\n──────────────────────';
+  return m;
+}
+function fmt(n){return '$'+Math.round(n).toLocaleString('es-MX');}
+function esIVA(sec){return S[sec].p==='Tarjeta'||S[sec].p==='Transferencia';}
+function cU(){const base=parseFloat(document.getElementById('u-serv').value)||0;const hex=parseFloat(document.getElementById('u-hex').value)||0;const ext=hex*600;const sub=base+ext;const ivA=esIVA('u');const iva=ivA?Math.round(sub*0.08):0;document.getElementById('u-pb').textContent=fmt(base);document.getElementById('u-pe').textContent=fmt(ext);document.getElementById('u-ivr').style.display=ivA?'flex':'none';if(ivA)document.getElementById('u-pi').textContent=fmt(iva);document.getElementById('u-tot').textContent=fmt(sub+iva);}
+function cT(){const tar=document.getElementById('t-tar').value;const hex=parseFloat(document.getElementById('t-hex').value)||0;const ext=hex*600;let base=0;const kc=document.getElementById('t-km-campo');if(tar==='for'){kc.style.display='flex';const km=parseFloat(document.getElementById('t-km2').value)||0;const esTI=document.getElementById('tm-t').classList.contains('ay');base=km*(esTI?50:40);}else{kc.style.display='none';base=parseFloat(tar)||0;}const sub=base+ext;const ivA=esIVA('t');const iva=ivA?Math.round(sub*0.08):0;document.getElementById('t-pb').textContent=fmt(base);document.getElementById('t-pe').textContent=fmt(ext);document.getElementById('t-ivr').style.display=ivA?'flex':'none';if(ivA)document.getElementById('t-pi').textContent=fmt(iva);document.getElementById('t-tot').textContent=fmt(sub+iva);}
+function cE(){const h=parseFloat(document.getElementById('e-hs').value)||1;const base=h*650;const ivA=esIVA('e');const iva=ivA?Math.round(base*0.08):0;document.getElementById('e-ph').textContent=fmt(base);document.getElementById('e-ivr').style.display=ivA?'flex':'none';if(ivA)document.getElementById('e-pi').textContent=fmt(iva);document.getElementById('e-tot').textContent=fmt(base+iva);}
+function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function go(id){const v=gv(id);return v||null;}
+function gF(id){const v=gv(id);if(!v)return null;const[y,m,d]=v.split('-');return d+'/'+m+'/'+y;}
+function gChips(cid,otroTxtId){const ch=Array.from(document.querySelectorAll('#'+cid+' .cc.on')).map(c=>c.textContent.trim()).filter(t=>t!=='Otro');if(otroTxtId){const o=gv(otroTxtId);if(o)ch.push(o);}return ch.length?ch.join(', '):null;}
+function gEq(cid){const its=[];document.querySelectorAll('#'+cid+' .eq-item.on').forEach(item=>{const n=item.querySelector('.eq-chk').dataset.n;const q=item.querySelector('.eq-qty');const v=q.value.trim();if(n==='otro'){if(v)its.push('- '+v);}else its.push('- '+n+' (x'+v+')');});return its.length?its.join('\n'):null;}
+function gPars(cid){const p=Array.from(document.querySelectorAll('#'+cid+' .par.on')).map(p=>p.lastChild.textContent.trim());return p.length?p.join(', '):null;}
+function gPrecio(sec){
+  const m=gv(sec+'-pm');
+  if(m)return '$'+parseFloat(m).toLocaleString('es-MX');
+  if(sec==='i'&&S.i.precio){
+    const ivA=esIVA('i');
+    const total=S.i.precio+(ivA?Math.round(S.i.precio*0.08):0);
+    return '$'+total.toLocaleString('es-MX')+(ivA?' (inc. IVA)':'');
+  }
+  const el=document.getElementById(sec+'-tot');
+  return el?el.textContent:'$0';
+}
+function gRec(pre){const i=document.getElementById(pre+'rec-i');const iv=document.getElementById(pre+'rec-iv');if(i&&i.classList.contains('ay'))return 'Solo ida';if(iv&&iv.classList.contains('ay'))return 'Ida y vuelta';return null;}
+function ln(l,v){return v?l+': '+v+'\n':'';}
+function blk(t){return '\n'+t.toUpperCase()+'\n'+'─'.repeat(Math.min(t.length,22))+'\n';}
+function pagoLabel(sec){const p=S[sec].p;if(!p)return null;const iva=esIVA(sec)?' (incluye IVA 8%)':'';return p+iva;}
+
+function bU(){
+  const consc=document.getElementById('uc-i').classList.contains('ar')?'Inconsciente':'Consciente';
+  const les=document.getElementById('ul-si').classList.contains('ar')?(gv('u-les')||'Si'):'No';
+  const cron=gChips('ucron','ucron-otxt');
+  const eq=gEq('ueq');
+  const pars=gPars('u-par');
+  const sEl=document.getElementById('u-serv');
+  const sTxt=sEl.value?sEl.options[sEl.selectedIndex].text.split(' - ')[0].trim():null;
+  const rec=gRec('u');
+  let m='AMBULANCIAS STEN\n';
+  m+='Servicio: URGENCIA\n';
+  m+=ln('Fecha',gF('u-fec'));
+  m+='Hora de envio: '+horaActual()+'\n';
+  if(rec)m+='Recorrido: '+rec+'\n';
+  m+=blk('Localizacion');
+  m+=ln('Direccion',go('u-ubi'));
+  m+=ln('Urgencia',go('u-urg'));
+  if(go('u-indic')){m+=blk('Indicaciones');m+=gv('u-indic')+'\n';}
+  m+=blk('Estado del paciente');
+  m+='Conciencia: '+consc+'\n';
+  if(consc==='Inconsciente')m+=ln('Tiempo inconsciente',go('u-tincon'));
+  m+='Lesiones visibles: '+les+'\n';
+  if(cron)m+='Enf. cronicas: '+cron+'\n';
+  if(go('u-obs-est'))m+='Observacion: '+gv('u-obs-est')+'\n';
+  m+=blk('Paciente');
+  m+=ln('Nombre',go('u-nom'));
+  if(go('u-edad'))m+='Edad: '+gv('u-edad')+' años\n';
+  if(go('u-peso'))m+='Peso: '+gv('u-peso')+' kg\n';
+  m+=ln('Fecha de nacimiento',gF('u-fnac'));
+  m+=ln('Ubicacion al momento',go('u-ubpx'));
+  if(eq){m+=blk('Equipo adicional');m+=eq+'\n';}
+  if(go('u-cn')||go('u-par')||go('u-ct')){
+    m+=blk('Contacto');
+    m+=ln('Nombre',go('u-cn'));
+    m+=ln('Parentesco',go('u-par'));
+    m+=ln('Telefono',go('u-ct'));
+  }
+  m+=blk('Servicio y pago');
+  if(sTxt)m+='Tipo: '+sTxt+'\n';
+  m+='Total: '+gPrecio('u')+'\n';
+  const pl=pagoLabel('u');
+  if(pl)m+='Metodo de pago: '+pl+'\n';
+  if(S.u.p==='Hospital'&&go('u-fact'))m+='No. cuenta: '+gv('u-fact')+'\n';
+  if(S.u.u||pars){m+=blk('Unidad y paramedicos');if(S.u.u)m+='Unidad: '+S.u.u+'\n';if(pars)m+='Paramedicos: '+pars+'\n';}
+  if(go('u-obs')){m+=blk('Observaciones');m+=gv('u-obs')+'\n';}
+  m+='\n──────────────────────';
+  return m;
+}
+
+function bT(){
+  const tipoMed=document.getElementById('tm-t').classList.contains('ay')?'Terapia Intensiva':document.getElementById('tm-b').classList.contains('ay')?'Basico':null;
+  const cron=gChips('tcron','tcron-otxt');
+  const eq=gEq('teq');
+  const pars=gPars('t-par');
+  const rec=gRec('t');
+  let m='AMBULANCIAS STEN\n';
+  m+='Servicio: TRASLADO\n';
+  if(S.t.tipoFecha==='hoy'){
+    const hoy=new Date();
+    const ds=hoy.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    m+='Fecha: '+ds+'\n';
+    m+='Hora de envio: '+horaActual()+'\n';
+  } else if(S.t.tipoFecha==='programado'){
+    m+=ln('Fecha programada',gF('t-fec'));
+    m+='TRASLADO PROGRAMADO\n';
+  } else {
+    m+=ln('Fecha',gF('t-fec'));
+    m+='Hora de envio: '+horaActual()+'\n';
+  }
+  if(rec)m+='Recorrido: '+rec+'\n';
+  m+=blk('Tipo de servicio');
+  if(S.t.tp)m+='Clasificacion: '+S.t.tp+(S.t.tp==='Otro'&&go('t-otro')?' ('+gv('t-otro')+')':'')+'\n';
+  if(tipoMed)m+='Traslado medico: '+tipoMed+'\n';
+  m+=ln('Origen',go('t-ori'));
+  m+=ln('Destino',go('t-dst'));
+  m+=ln('Motivo',go('t-esp'));
+  if(go('t-indic')){m+=blk('Indicaciones');m+=gv('t-indic')+'\n';}
+  m+=blk('Paciente');
+  m+=ln('Nombre',go('t-nom'));
+  if(go('t-edad'))m+='Edad: '+gv('t-edad')+' años\n';
+  if(go('t-peso'))m+='Peso: '+gv('t-peso')+' kg\n';
+  m+=ln('Fecha de nacimiento',gF('t-fnac'));
+  m+=ln('Ubicacion',go('t-ubpx'));
+  m+=ln('Diagnostico',go('t-diag'));
+  if(cron)m+='Enf. cronicas: '+cron+'\n';
+  if(eq){m+=blk('Equipo medico');m+=eq+'\n';}
+  if(go('t-medn')||go('t-medt')){m+=blk('Medico tratante');m+=ln('Nombre',go('t-medn'));m+=ln('Telefono',go('t-medt'));}
+  if(go('t-famn')||go('t-famp')||go('t-famt')){
+    m+=blk('Contacto familiar');
+    m+=ln('Nombre',go('t-famn'));
+    m+=ln('Parentesco',go('t-famp'));
+    m+=ln('Telefono',go('t-famt'));
+  }
+  m+=blk('Servicio y pago');
+  m+='Total: '+gPrecio('t')+'\n';
+  const pl=pagoLabel('t');
+  if(pl)m+='Metodo de pago: '+pl+'\n';
+  if(S.t.p==='Hospital'&&go('t-fact'))m+='No. cuenta: '+gv('t-fact')+'\n';
+  if(S.t.u||pars){m+=blk('Unidad y paramedicos');if(S.t.u)m+='Unidad: '+S.t.u+'\n';if(pars)m+='Paramedicos: '+pars+'\n';}
+  if(go('t-notas')){m+=blk('Notas');m+=gv('t-notas')+'\n';}
+  m+='\n──────────────────────';
+  return m;
+}
+
+function bE(){
+  const h=gv('e-hs');
+  // Unidades y paramedicos por unidad
+  const sel=Array.from(document.querySelectorAll('#e-und .ub.on')).map(b=>b.firstChild.textContent.trim());
+  const parsUM03=gPars('e-par-um03');
+  const parsUM05=gPars('e-par-um05');
+  let m='AMBULANCIAS STEN\n';
+  m+='Servicio: EVENTO\n';
+  m+=blk('Datos del evento');
+  m+=ln('Evento',go('e-nom'));
+  m+=ln('Lugar',go('e-lug'));
+  m+=ln('Fecha',gF('e-fec'));
+  m+=ln('Hora de inicio',go('e-hor'));
+  m+=ln('Hora de termino',go('e-hor-fin'));
+  m+=ln('A cargo de',go('e-car'));
+  if(go('e-cn')||go('e-ct')){m+=blk('Contacto');m+=ln('Nombre',go('e-cn'));m+=ln('Telefono',go('e-ct'));}
+  m+=blk('Servicio y pago');
+  if(h)m+='Horas de cobertura: '+h+(h==='1'?' hora':' horas')+'\n';
+  m+='Total: '+gPrecio('e')+'\n';
+  const pl=pagoLabel('e');
+  if(pl)m+='Metodo de pago: '+pl+'\n';
+  if(S.e.p==='Hospital'&&go('e-fact'))m+='No. cuenta: '+gv('e-fact')+'\n';
+  if(go('e-qui'))m+='Responsable de pago: '+gv('e-qui')+'\n';
+  if(sel.length){
+    m+=blk('Unidades y paramedicos');
+    if(sel.includes('UM03')){
+      m+='UM03'+(parsUM03?' — '+parsUM03:'')+'\n';
+    }
+    if(sel.includes('UM05')){
+      m+='UM05'+(parsUM05?' — '+parsUM05:'')+'\n';
+    }
+  }
+  m+='\n──────────────────────';
+  return m;
+}
+
+function genMsg(tipo){
+  const builds={U:bU,T:bT,E:bE,I:bI};
+  document.getElementById('wt-'+tipo).value=builds[tipo]();
+  document.getElementById('wp-'+tipo).style.display='block';
+  setTimeout(()=>document.getElementById('wp-'+tipo).scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function copiar(tipo){
+  const txt=document.getElementById('wt-'+tipo).value;
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>alert('Mensaje copiado al portapapeles'));}
+  else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Mensaje copiado');}
+}
+
+function enviar(tipo){
+  const txt=document.getElementById('wt-'+tipo).value;
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+
+function reset(tipo){
+  if(!confirm('Limpiar todos los campos?'))return;
+  const sec=document.getElementById('s'+tipo);
+  sec.querySelectorAll('input,textarea,select').forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value='';});
+  sec.querySelectorAll('.cc,.pc').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.par,.ub,.pb').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.tb').forEach(el=>el.classList.remove('ag','ar','ay'));
+  sec.querySelectorAll('.cond').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.eq-item').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.px-sugg').forEach(el=>el.classList.remove('on'));
+  sec.querySelectorAll('.px-status').forEach(el=>{el.style.display='none';el.textContent='';});
+  document.getElementById('wp-'+tipo).style.display='none';
+  if(tipo==='U')S.u={p:'',u:''};
+  if(tipo==='T'){S.t={p:'',u:'',tp:'',tipoFecha:''};document.getElementById('fc-for').style.display='none';document.getElementById('t-km-campo').style.display='none';document.getElementById('tt-hoy').classList.remove('ay');document.getElementById('tt-prog').classList.remove('ay');document.getElementById('cd-t-fecha-prog').classList.remove('on');}
+  if(tipo==='E'){S.e={p:'',u:''};document.getElementById('e-par-um03-sec').style.display='none';document.getElementById('e-par-um05-sec').style.display='none';}
+  if(tipo==='I'){
+    S.i={p:'',estudio:'',precio:0,clasif:'',origen:'',region:''};
+    document.getElementById('i-region').innerHTML='<option value="">-- Seleccionar region --</option>';
+    document.getElementById('i-sel-card').style.display='none';
+    document.getElementById('i-req-card').style.display='none';
+    document.getElementById('i-semaforo').style.display='none';
+    document.getElementById('chk-creat').style.display='none';
+    document.querySelectorAll('.estudio-item').forEach(e=>e.classList.remove('on'));
+    document.querySelectorAll('.checklist-item').forEach(e=>{e.classList.remove('on');const b=e.querySelector('.chk-box');if(b)b.textContent='';});
+    document.getElementById('cd-ior-hosp').classList.remove('on');
+    document.getElementById('cd-ior-dom').classList.remove('on');
+  }
+  sDef();if(tipo==='E')cE();
+}
+// Inicializar
+sDef();cE();
+</script>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB9O7yGD0qZzyde9EUN0WjyFHGHsTzQO1o",
+  authDomain: "ambulancias-sten-forms.firebaseapp.com",
+  projectId: "ambulancias-sten-forms",
+  storageBucket: "ambulancias-sten-forms.firebasestorage.app",
+  messagingSenderId: "195916695083",
+  appId: "1:195916695083:web:dd5bbeb825065c86d48c6e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Mapeo de prefijos a IDs de campos
+const campos = {
+  U: { nom:'u-nom', edad:'u-edad', peso:'u-peso', fnac:'u-fnac', cron:'ucron', cronOtro:'ucron-otxt', sugg:'u-sugg', status:'u-px-status' },
+  T: { nom:'t-nom', edad:'t-edad', peso:'t-peso', fnac:'t-fnac', cron:'tcron', cronOtro:'tcron-otxt', sugg:'t-sugg', status:'t-px-status' },
+  I: { nom:'i-nom', edad:'i-edad', peso:'i-peso', fnac:'i-fnac', cron:'icron', cronOtro:'icron-otxt', sugg:'i-sugg', status:'i-px-status' }
+};
+
+const CRONICAS = ['Diabetes','HTA','EPOC','Cardiopatia','Renal','Oncologico'];
+let buscarTimer = null;
+
+// Buscar pacientes mientras escribe
+window.buscarPx = async function(nomId, suggId, sec) {
+  const texto = document.getElementById(nomId).value.trim();
+  const sugg = document.getElementById(suggId);
+  clearTimeout(buscarTimer);
+  if (texto.length < 2) { sugg.classList.remove('on'); return; }
+  buscarTimer = setTimeout(async () => {
+    try {
+      const q = query(
+        collection(db, 'pacientes'),
+        where('nombre_lower', '>=', texto.toLowerCase()),
+        where('nombre_lower', '<=', texto.toLowerCase() + '\uf8ff'),
+        orderBy('nombre_lower'),
+        limit(6)
+      );
+      const snap = await getDocs(q);
+      if (snap.empty) { sugg.classList.remove('on'); return; }
+      sugg.innerHTML = '';
+      snap.forEach(doc => {
+        const d = doc.data();
+        const div = document.createElement('div');
+        div.className = 'px-item';
+        const edad = d.edad ? d.edad + ' años' : '';
+        const cron = d.cronicas ? d.cronicas : '';
+        div.innerHTML = `<div class="px-name">${d.nombre}</div><div class="px-info">${[edad, cron].filter(Boolean).join(' · ')}</div>`;
+        div.onclick = () => llenarPx(d, sec, suggId);
+        sugg.appendChild(div);
+      });
+      sugg.classList.add('on');
+    } catch(e) { console.error(e); }
+  }, 300);
+};
+
+// Llenar campos con datos del paciente seleccionado
+function llenarPx(d, sec, suggId) {
+  const c = campos[sec];
+  document.getElementById(c.nom).value = d.nombre || '';
+  document.getElementById(c.edad).value = d.edad || '';
+  document.getElementById(c.peso).value = d.peso || '';
+  document.getElementById(c.fnac).value = d.fnac || '';
+  // Enfermedades crónicas
+  document.querySelectorAll('#'+c.cron+' .cc').forEach(chip => {
+    const txt = chip.textContent.trim();
+    if (txt === 'Otro') return;
+    chip.classList.toggle('on', d.cronicas_arr && d.cronicas_arr.includes(txt));
+  });
+  // Otro crónicas
+  if (d.cronicas_otro) {
+    document.getElementById(c.cronOtro).value = d.cronicas_otro;
+    const otroChip = document.querySelector('#'+c.cron+' .cc:last-child');
+    if (otroChip) { otroChip.classList.add('on'); document.getElementById(c.cronOtro).closest('.cond').classList.add('on'); }
+  }
+  document.getElementById(suggId).classList.remove('on');
+  const st = document.getElementById(c.status);
+  st.textContent = '✓ Paciente cargado desde base de datos';
+  st.style.display = 'block';
+  setTimeout(() => { st.style.display = 'none'; }, 3000);
+}
+
+// Guardar paciente nuevo en Firebase
+window.guardarPx = async function(sec) {
+  const c = campos[sec];
+  const nombre = document.getElementById(c.nom).value.trim();
+  if (!nombre) { alert('Ingresa el nombre del paciente primero'); return; }
+  const cronArr = Array.from(document.querySelectorAll('#'+c.cron+' .cc.on'))
+    .map(x => x.textContent.trim()).filter(t => t !== 'Otro');
+  const cronOtro = document.getElementById(c.cronOtro).value.trim();
+  const data = {
+    nombre,
+    nombre_lower: nombre.toLowerCase(),
+    edad: document.getElementById(c.edad).value.trim(),
+    peso: document.getElementById(c.peso).value.trim(),
+    fnac: document.getElementById(c.fnac).value.trim(),
+    cronicas_arr: cronArr,
+    cronicas_otro: cronOtro,
+    cronicas: [...cronArr, ...(cronOtro ? [cronOtro] : [])].join(', '),
+    actualizado: new Date().toISOString()
+  };
+  try {
+    await addDoc(collection(db, 'pacientes'), data);
+    const st = document.getElementById(c.status);
+    st.textContent = '✓ Paciente guardado correctamente';
+    st.style.display = 'block';
+    setTimeout(() => { st.style.display = 'none'; }, 3000);
+  } catch(e) {
+    alert('Error al guardar: ' + e.message);
+  }
+};
+
+// Cerrar sugerencias al tocar fuera
+document.addEventListener('click', e => {
+  if (!e.target.closest('.px-wrap')) {
+    document.querySelectorAll('.px-sugg').forEach(s => s.classList.remove('on'));
+  }
+});
+</script>
+</body>
+</html>
