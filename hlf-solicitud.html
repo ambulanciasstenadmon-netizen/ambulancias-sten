@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Solicitud de Ambulancia — STEN</title>
+<style>
+:root{
+  --azul:#1a3a6b;--azul-med:#2563a8;--azul-claro:#e8f0fa;
+  --verde:#1a6b3a;--verde-med:#22a05a;--verde-claro:#e8f7ee;
+  --rojo:#b01c1c;--rojo-claro:#fdeaea;--rojo-med:#d32f2f;
+  --naranja:#e65100;--naranja-claro:#fff3e0;
+  --amarillo:#f59e0b;--amarillo-claro:#fffbeb;
+  --bg:#f4f6fa;--card:#fff;--border:#d0d8e8;
+  --text:#1a2340;--muted:#5a6a85;--input-bg:#f8fafd;
+  --font:'Segoe UI',system-ui,sans-serif;
+  --radius:12px;--radius-sm:8px;--shadow:0 2px 12px rgba(26,58,107,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.header{background:var(--azul);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-ico{width:40px;height:40px;background:var(--rojo);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;flex-shrink:0;}
+.logo-tx{font-size:16px;font-weight:800;color:#fff;}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.65);letter-spacing:1.2px;text-transform:uppercase;}
+.header-right{text-align:right;}
+.tel{font-size:13px;font-weight:800;color:#fff;}
+.tel-sub{font-size:9px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;}
+.ts-banner{background:rgba(0,0,0,.25);padding:7px 16px;display:flex;align-items:center;justify-content:space-between;}
+.ts-left{display:flex;align-items:center;gap:6px;}
+.ts-dot{width:8px;height:8px;border-radius:50%;background:#4caf50;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ts-txt{font-size:11px;color:rgba(255,255,255,.8);font-weight:600;}
+.ts-val{font-size:11px;color:#fff;font-family:monospace;font-weight:700;}
+.unidad-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:3px 10px;font-size:11px;color:#fff;font-weight:700;}
+.hero{background:linear-gradient(135deg,var(--azul),var(--azul-med));padding:18px 16px;text-align:center;}
+.hero-title{font-size:20px;font-weight:900;color:#fff;margin-bottom:3px;}
+.hero-title span{color:#f7d23e;}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.75);margin-bottom:8px;}
+.hero-unidad{font-size:14px;font-weight:800;color:#f7d23e;}
+.content{padding:14px 14px 100px;max-width:520px;margin:0 auto;}
+.fc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow);}
+.fch{padding:10px 14px;color:#fff;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;gap:7px;}
+.fch.azul{background:var(--azul);}
+.fch.verde{background:var(--verde);}
+.fch.rojo{background:var(--rojo-med);}
+.fch.gris{background:#3a4a6b;}
+.fch.naranja{background:var(--naranja);}
+.fch.amarillo{background:#b45309;}
+.fcb{padding:14px;display:flex;flex-direction:column;gap:10px;}
+label{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px;display:block;}
+input[type=text],input[type=number],input[type=tel],input[type=date],input[type=time],textarea,select{width:100%;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;padding:10px 12px;font-family:var(--font);-webkit-appearance:none;appearance:none;transition:border-color .15s;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%235a6a85'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--azul-med);background:#fff;}
+input.error,textarea.error,select.error{border-color:var(--rojo-med) !important;background:#fff8f8;}
+select:disabled{background-color:#e8f0fa;color:var(--azul);font-weight:700;border-color:var(--azul-med);}
+textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.f{display:flex;flex-direction:column;}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+/* UNIDAD LOCKED */
+.unidad-locked{display:flex;align-items:center;gap:8px;background:var(--azul-claro);border:1.5px solid var(--azul-med);border-radius:var(--radius-sm);padding:10px 14px;}
+.unidad-locked-tx{font-size:14px;font-weight:800;color:var(--azul);}
+.unidad-locked-sub{font-size:11px;color:var(--muted);}
+/* CHIPS CLASIFICACION */
+.chips-wrap{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--input-bg);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.chip.on{background:var(--azul-claro);border-color:var(--azul-med);color:var(--azul);}
+.chip.on-rojo{background:var(--rojo-claro);border-color:var(--rojo-med);color:var(--rojo-med);}
+/* TOGGLE BUTTONS */
+.tg{display:flex;gap:6px;}
+.tb{flex:1;padding:10px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;}
+.tb.on-verde{background:var(--verde-claro);border-color:var(--verde-med);color:var(--verde);}
+.tb.on-rojo{background:var(--rojo-claro);border-color:var(--rojo-med);color:var(--rojo-med);}
+.tb.on-azul{background:var(--azul-claro);border-color:var(--azul-med);color:var(--azul);}
+.tb.on-naranja{background:var(--naranja-claro);border-color:var(--naranja);color:var(--naranja);}
+/* COND */
+.cond{display:none;margin-top:8px;padding:12px;background:var(--azul-claro);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.cond.on{display:block;}
+.cond.rojo-bg{background:var(--rojo-claro);}
+.cond.verde-bg{background:var(--verde-claro);}
+/* CHEK ITEMS */
+.chk-group{display:flex;flex-wrap:wrap;gap:6px;}
+.chk-item{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--border);border-radius:20px;cursor:pointer;transition:all .15s;background:#fff;font-size:13px;color:var(--muted);}
+.chk-item.on{border-color:var(--azul-med);background:var(--azul-claro);color:var(--azul);}
+.chk-box{width:15px;height:15px;border-radius:4px;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;transition:all .15s;}
+.chk-item.on .chk-box{background:var(--azul-med);border-color:var(--azul-med);color:#fff;}
+/* EQUIPO ITEMS */
+.eq-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:#fff;margin-bottom:6px;transition:border-color .15s;flex-wrap:wrap;}
+.eq-row.on{border-color:var(--rojo-med);background:var(--rojo-claro);}
+.eq-chk{width:18px;height:18px;accent-color:var(--rojo-med);cursor:pointer;flex-shrink:0;margin-top:2px;}
+.eq-lbl{font-size:13px;color:var(--muted);flex:1;}
+.eq-row.on .eq-lbl{color:var(--rojo-med);font-weight:600;}
+.eq-extra{display:none;width:100%;margin-top:8px;}
+.eq-row.on .eq-extra{display:block;}
+.bombas-inputs{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.bomba-input{font-size:13px;padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;background:#fff;color:var(--text);width:100%;}
+/* SIGNOS VITALES */
+.sv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sv-item{background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;}
+.sv-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.sv-unit{font-size:10px;color:var(--muted);margin-top:3px;}
+.sv-ta-row{display:flex;align-items:center;gap:6px;}
+.sv-ta-row input{flex:1;}
+.sv-sep{font-size:16px;color:var(--muted);font-weight:700;}
+/* PAGO */
+.pago-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pago-btn{padding:10px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.pago-ico{font-size:16px;margin-bottom:2px;}
+.pago-btn.on{background:var(--azul-claro);border-color:var(--azul-med);color:var(--azul);}
+/* ALERTA */
+.alerta{background:#fff7e6;border:1.5px solid #f0a500;border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:#7a5000;display:flex;gap:8px;align-items:flex-start;line-height:1.5;}
+.alerta-ico{font-size:16px;flex-shrink:0;}
+.alerta.critico{background:var(--rojo-claro);border-color:var(--rojo-med);color:var(--rojo-med);}
+/* CHECKLIST PRE */
+.chklist-pre{background:var(--verde-claro);border:1.5px solid var(--verde-med);border-radius:var(--radius);padding:14px;margin-bottom:12px;}
+.chklist-title{font-size:13px;font-weight:800;color:var(--verde);margin-bottom:10px;}
+.chklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.chklist-it{font-size:12px;color:var(--verde);display:flex;align-items:center;gap:5px;}
+/* ERROR BANNER */
+.error-banner{background:var(--rojo-claro);border:1.5px solid var(--rojo-med);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;font-size:13px;color:var(--rojo-med);display:none;}
+.error-banner.on{display:block;}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.on{display:flex;}
+.modal{background:#fff;border-radius:var(--radius);max-width:400px;width:100%;padding:0;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.modal-header{background:var(--rojo-med);padding:16px 18px;display:flex;align-items:center;gap:10px;animation:pulse-border 1s infinite;}
+@keyframes pulse-border{0%,100%{background:var(--rojo-med);}50%{background:#b00000;}}
+.modal-header-ico{font-size:24px;}
+.modal-header-tx{font-size:15px;font-weight:800;color:#fff;}
+.modal-header-sub{font-size:11px;color:rgba(255,255,255,.8);}
+.modal-body{padding:18px;}
+.modal-aviso{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:14px;background:var(--rojo-claro);border-radius:var(--radius-sm);padding:12px;}
+.modal-aviso strong{color:var(--rojo-med);}
+.modal-tel{text-align:center;margin-bottom:14px;}
+.modal-tel-num{font-size:22px;font-weight:900;color:var(--azul);}
+.modal-tel-sub{font-size:11px;color:var(--muted);}
+.modal-check-row{display:flex;align-items:flex-start;gap:10px;padding:12px;background:#f8fafd;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;margin-bottom:14px;}
+.modal-check-row.on{background:var(--verde-claro);border-color:var(--verde-med);}
+.modal-chkbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all .15s;}
+.modal-check-row.on .modal-chkbox{background:var(--verde-med);border-color:var(--verde-med);color:#fff;}
+.modal-check-tx{font-size:13px;color:var(--text);line-height:1.5;}
+.modal-check-row.on .modal-check-tx{color:var(--verde);}
+.btn-wa-final{width:100%;padding:15px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:800;cursor:pointer;background:#ccc;color:#fff;transition:all .2s;}
+.btn-wa-final.on{background:linear-gradient(135deg,#128C7E,#25D366);box-shadow:0 4px 16px rgba(18,140,126,.35);}
+.btn-cancelar{width:100%;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:13px;cursor:pointer;margin-top:6px;}
+/* WA PREVIEW */
+.btn-gen{width:100%;padding:16px;border-radius:var(--radius);border:none;font-size:15px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;box-shadow:0 4px 16px rgba(18,140,126,.3);}
+.btn-gen:active{transform:scale(.98);}
+.wa-box{background:#e8fdf0;border:1.5px solid #25D366;border-radius:var(--radius);padding:14px;margin:12px 0 10px;}
+.wa-lbl{font-size:10px;color:#128C7E;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.wa-lbl span{color:#25D366;}
+.wa-ta{width:100%;background:#f0fdf4;border:1.5px solid #25D366;border-radius:var(--radius-sm);color:#1a3a1a;font-size:13px;line-height:1.8;padding:12px;font-family:monospace;min-height:280px;resize:vertical;}
+.wa-acts{display:flex;gap:8px;}
+.bwa{flex:1;padding:13px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.bcp{background:#e8fdf0;color:#128C7E;border:1.5px solid #128C7E;}
+.bsn{background:#128C7E;color:#fff;}
+.brst{width:100%;padding:11px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:13px;cursor:pointer;margin-top:6px;}
+.footer{text-align:center;padding:20px 16px;background:var(--azul);color:rgba(255,255,255,.6);font-size:11px;}
+.footer strong{color:#fff;}
+</style>
+</head>
+<body>
+
+<!-- MODAL PROTOCOLO -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-ico">📞</span>
+      <div>
+        <div class="modal-header-tx">AVISO OBLIGATORIO DE PROTOCOLO</div>
+        <div class="modal-header-sub">Antes de enviar por WhatsApp</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-aviso">
+        Una vez generada esta solicitud, <strong>ES REQUISITO OBLIGATORIO NOTIFICAR PRIMERO POR LLAMADA TELEFONICA</strong> a la Coordinacion de Ambulancias STEN para verificar disponibilidad, confirmar asignacion de unidad y cotizacion.
+      </div>
+      <div class="modal-tel">
+        <div class="modal-tel-num">📞 89-91-22-74-89</div>
+        <div class="modal-tel-sub">Coordinacion 24/7 — Llama antes de enviar</div>
+      </div>
+      <div class="modal-check-row" id="modal-chk-row" onclick="toggleModalChk()">
+        <div class="modal-chkbox" id="modal-chkbox"></div>
+        <div class="modal-check-tx">Acepto y entiendo que debo realizar la <strong>llamada telefonica previa</strong> a Coordinacion STEN antes de enviar esta solicitud por WhatsApp.</div>
+      </div>
+      <button class="btn-wa-final" id="btn-wa-final" onclick="enviarWA()" disabled>📲 MANDAR SOLICITUD POR WHATSAPP</button>
+      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar — Revisar formulario</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-ico">+</div>
+      <div><div class="logo-tx">AMBULANCIAS STEN</div><div class="logo-sub">Traslados Especializados del Norte</div></div>
+    </div>
+    <div class="header-right">
+      <div class="tel">89-91-22-74-89</div>
+      <div class="tel-sub">Servicio 24/7</div>
+    </div>
+  </div>
+  <div class="ts-banner">
+    <div class="ts-left">
+      <div class="ts-dot"></div>
+      <span class="ts-txt">Solicitud activa:</span>
+      <span class="ts-val" id="ts-display">--</span>
+    </div>
+    <div class="unidad-badge" id="unidad-badge">-- Unidad --</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-title">SOLICITUD DE <span>AMBULANCIA</span></div>
+  <div class="hero-sub">Completa el formulario para un servicio seguro y rapido</div>
+  <div class="hero-unidad" id="hero-unidad-txt">Selecciona tu unidad de negocio</div>
+</div>
+
+<div class="content">
+
+  <div class="chklist-pre">
+    <div class="chklist-title">✅ Ten lista esta informacion antes de continuar</div>
+    <div class="chklist-grid">
+      <div class="chklist-it">✓ Nombre del paciente</div>
+      <div class="chklist-it">✓ Habitacion / Ubicacion</div>
+      <div class="chklist-it">✓ Edad y diagnostico</div>
+      <div class="chklist-it">✓ Tipo de traslado</div>
+      <div class="chklist-it">✓ Estado del paciente</div>
+      <div class="chklist-it">✓ Familiar responsable</div>
+      <div class="chklist-it">✓ Enfermedades cronicas</div>
+      <div class="chklist-it">✓ Metodo de pago</div>
+    </div>
+  </div>
+
+  <!-- 1. UNIDAD DE NEGOCIO -->
+  <div class="fc" id="sec-unidad">
+    <div class="fch azul">🏥 Unidad de negocio</div>
+    <div class="fcb">
+      <div id="unidad-select-wrap">
+        <label>Selecciona el hospital solicitante *</label>
+        <select id="unidad-select" onchange="setUnidad(this.value)">
+          <option value="">-- Seleccionar --</option>
+          <option value="HLF24/7">HLF24/7 — Hospital Las Fuentes</option>
+          <option value="HES">HES — Hospital Santander</option>
+          <option value="OTRO">OTRO</option>
+        </select>
+      </div>
+      <div id="unidad-locked-view" style="display:none">
+        <div class="unidad-locked">
+          <span style="font-size:18px;">🔒</span>
+          <div><div class="unidad-locked-tx" id="unidad-locked-txt"></div><div class="unidad-locked-sub">Unidad asignada por QR / NFC</div></div>
+        </div>
+      </div>
+      <div class="cond" id="cd-unidad-otro"><label>Especificar unidad / hospital</label><input type="text" id="unidad-otro-txt" placeholder="Nombre del hospital"></div>
+    </div>
+  </div>
+
+  <!-- FECHA Y PROGRAMACION — arriba de clasificacion -->
+  <div class="fc" id="sec-fecha">
+    <div class="fch gris">📅 Fecha y programacion del traslado</div>
+    <div class="fcb">
+      <div class="f">
+        <label>Tipo de programacion *</label>
+        <div class="tg">
+          <div class="tb on-azul" id="prog-hoy" onclick="setProg('hoy')">Hoy</div>
+          <div class="tb" id="prog-prog" onclick="setProg('programado')">Programado</div>
+        </div>
+      </div>
+      <div class="cond" id="cd-prog-fecha">
+        <div class="f2">
+          <div class="f"><label>Fecha programada *</label><input type="date" id="f-fecha-prog" min=""></div>
+          <div class="f"><label>Hora programada *</label><input type="time" id="f-hora-prog"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLASIFICACION Y TIPO -->
+  <div class="fc" id="sec-clasificacion">
+    <div class="fch rojo">🚑 Clasificacion del traslado</div>
+    <div class="fcb">
+      <div class="f">
+        <label>Clasificacion *</label>
+        <div class="chips-wrap" id="clasif-chips">
+          <div class="chip" onclick="setClasif(this,'Egreso')">Egreso</div>
+          <div class="chip" onclick="setClasif(this,'Estudio')">Estudio</div>
+          <div class="chip" onclick="setClasif(this,'Consulta')">Consulta</div>
+          <div class="chip" onclick="setClasif(this,'Sesiones')">Sesiones</div>
+          <div class="chip" onclick="setClasif(this,'Interhospitalario')">Interhospitalario</div>
+          <div class="chip" onclick="setClasif(this,'Foraneo')">Foraneo</div>
+          <div class="chip" onclick="setClasif(this,'Urgencia')">Urgencia</div>
+          <div class="chip" onclick="setClasif(this,'Otro')">Otro</div>
+        </div>
+        <div class="cond" id="cd-otro-clasif"><label>Especificar clasificacion</label><input type="text" id="f-otro-clasif" placeholder="Describir..."></div>
+      </div>
+      <div class="f">
+        <label>Tipo de traslado medico *</label>
+        <div class="tg">
+          <div class="tb" id="tm-basico" onclick="setTipoMedico('Basico')">Basico</div>
+          <div class="tb" id="tm-ti" onclick="setTipoMedico('Terapia Intensiva')">Terapia Intensiva</div>
+        </div>
+      </div>
+      <!-- CONDICIONAL ESTUDIO — solo nombre del estudio -->
+      <div class="cond" id="cd-estudio">
+        <div class="f"><label>Que estudio se realizara *</label><input type="text" id="f-estudio" placeholder="Ej: TAC de craneo, Resonancia lumbar..."></div>
+      </div>
+      <!-- CONDICIONAL INTERHOSPITALARIO -->
+      <div class="cond" id="cd-interhosp">
+        <div class="alerta"><span class="alerta-ico">⚠️</span><span>Confirmar que el hospital receptor <strong>YA acepto al paciente</strong> y cuenta con disponibilidad.</span></div>
+        <div class="f" style="margin-top:8px;"><label>Hospital receptor confirmado *</label><input type="text" id="f-hosp-receptor" placeholder="Nombre del hospital receptor"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UBICACIONES — solo destino -->
+  <div class="fc" id="sec-ubicaciones">
+    <div class="fch gris">📍 Destino del traslado</div>
+    <div class="fcb">
+      <div class="f"><label>Ubicacion de destino (Hacia donde se dirige) *</label><input type="text" id="f-destino" placeholder="Hospital receptor, clinica o domicilio final"></div>
+    </div>
+  </div>
+
+  <!-- 4. DATOS DEL PACIENTE -->
+  <div class="fc" id="sec-paciente">
+    <div class="fch azul">👤 Datos del paciente</div>
+    <div class="fcb">
+      <div class="f"><label>Nombre completo *</label><input type="text" id="f-nombre" placeholder="Nombre completo del paciente"></div>
+      <div class="f"><label>Habitacion / Ubicacion actual</label><input type="text" id="f-hab" placeholder="Ej: Hab. 214, UCI piso 2..."></div>
+      <div class="f2">
+        <div class="f"><label>Edad</label><input type="number" id="f-edad" placeholder="Anos"></div>
+        <div class="f"><label>Peso aprox. (kg)</label><input type="number" id="f-peso" placeholder="kg"></div>
+      </div>
+      <div class="f"><label>Fecha de nacimiento</label><input type="date" id="f-fnac" onchange="calcEdad()"></div>
+      <div class="f"><label>Diagnostico actual *</label><input type="text" id="f-diag" placeholder="Diagnostico principal del paciente"></div>
+    </div>
+  </div>
+
+  <!-- 5. EVALUACION MEDICA -->
+  <div class="fc" id="sec-evaluacion">
+    <div class="fch naranja">🩺 Evaluacion medica</div>
+    <div class="fcb">
+      <div class="f">
+        <label>Estado del paciente *</label>
+        <div class="tg">
+          <div class="tb" id="est-estable" onclick="setEstado('ESTABLE')">✅ ESTABLE</div>
+          <div class="tb" id="est-inestable" onclick="setEstado('INESTABLE')">⚠️ INESTABLE</div>
+        </div>
+      </div>
+      <div class="f">
+        <label>Paciente critico</label>
+        <div class="tg">
+          <div class="tb" id="crit-no" onclick="setCritico('NO')">No</div>
+          <div class="tb" id="crit-si" onclick="setCritico('SI')">🔴 SI — Critico</div>
+        </div>
+      </div>
+      <div class="alerta critico" id="alerta-critico" style="display:none"><span class="alerta-ico">🔴</span><span><strong>Paciente critico.</strong> Se asignara unidad avanzada. Coordinacion inmediata con paramedicos.</span></div>
+      <div class="f">
+        <label>Requiere medico acompanante</label>
+        <div class="tg">
+          <div class="tb" id="med-no" onclick="setMedico('NO')">No</div>
+          <div class="tb" id="med-si" onclick="setMedico('SI')">Si — Requiere medico</div>
+        </div>
+      </div>
+      <div class="cond" id="cd-medico">
+        <div class="f" style="margin-bottom:8px;"><label>Nombre del medico</label><input type="text" id="f-med-nom" placeholder="Dr. Nombre completo"></div>
+        <div class="f2"><div class="f"><label>Telefono</label><input type="tel" id="f-med-tel" placeholder="10 digitos"></div><div class="f"><label>Cedula profesional</label><input type="text" id="f-med-ced" placeholder="No. cedula"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. SIGNOS VITALES — obligatorio, siempre visible -->
+  <div class="fc" id="sec-signos">
+    <div class="fch amarillo">💓 Signos vitales — Ultima toma (obligatorio)</div>
+    <div class="fcb">
+      <div class="sv-grid">
+        <div class="sv-item">
+          <div class="sv-label">Tension Arterial (TA)</div>
+          <div class="sv-ta-row">
+            <input type="number" id="sv-ta-s" placeholder="Sist." style="padding:7px 8px;font-size:13px;">
+            <span class="sv-sep">/</span>
+            <input type="number" id="sv-ta-d" placeholder="Diast." style="padding:7px 8px;font-size:13px;">
+          </div>
+          <div class="sv-unit">mmHg</div>
+        </div>
+        <div class="sv-item">
+          <div class="sv-label">Frec. Cardiaca (FC)</div>
+          <input type="number" id="sv-fc" placeholder="Ej: 80" style="padding:7px 10px;font-size:13px;">
+          <div class="sv-unit">LPM</div>
+        </div>
+        <div class="sv-item">
+          <div class="sv-label">Frec. Respiratoria (FR)</div>
+          <input type="number" id="sv-fr" placeholder="Ej: 18" style="padding:7px 10px;font-size:13px;">
+          <div class="sv-unit">RPM</div>
+        </div>
+        <div class="sv-item">
+          <div class="sv-label">Saturacion O2 (SpO2)</div>
+          <input type="number" id="sv-spo2" placeholder="Ej: 95" style="padding:7px 10px;font-size:13px;">
+          <div class="sv-unit">%</div>
+        </div>
+        <div class="sv-item">
+          <div class="sv-label">Glucemia Capilar (DXT)</div>
+          <input type="number" id="sv-dxt" placeholder="Ej: 120" style="padding:7px 10px;font-size:13px;">
+          <div class="sv-unit">mg/dL</div>
+        </div>
+        <div class="sv-item">
+          <div class="sv-label">Temperatura</div>
+          <input type="number" id="sv-temp" placeholder="Ej: 36.5" step="0.1" style="padding:7px 10px;font-size:13px;">
+          <div class="sv-unit">°C</div>
+        </div>
+      </div>
+      <div class="f">
+        <label>Notas medicas para los paramedicos</label>
+        <textarea id="f-notas-med" placeholder="Indicaciones medicas especiales, manejo del paciente, observaciones clinicas..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. ENFERMEDADES CRONICAS -->
+  <div class="fc" id="sec-cronicas">
+    <div class="fch verde">🔬 Enfermedades cronicas / Antecedentes</div>
+    <div class="fcb">
+      <div class="f">
+        <label>El paciente padece enfermedades cronicas *</label>
+        <div class="tg">
+          <div class="tb" id="cron-no" onclick="setCronicas('NO')">No</div>
+          <div class="tb" id="cron-si" onclick="setCronicas('SI')">Si — Padece enfermedades cronicas</div>
+        </div>
+      </div>
+      <div class="cond" id="cd-cronicas">
+        <div class="chk-group" id="f-cronicas">
+          <div class="chk-item" onclick="tChk(this)"><div class="chk-box"></div>Diabetes</div>
+          <div class="chk-item" onclick="tChk(this)"><div class="chk-box"></div>Hipertension</div>
+          <div class="chk-item" onclick="tChk(this)"><div class="chk-box"></div>EPOC</div>
+          <div class="chk-item" onclick="tChk(this)"><div class="chk-box"></div>VIH / HIV</div>
+          <div class="chk-item" onclick="tChk(this)"><div class="chk-box"></div>Tuberculosis</div>
+          <div class="chk-item" onclick="tChk(this)"><div class="chk-box"></div>Cancer (CA)</div>
+          <div class="chk-item" onclick="tChkOtro(this,'cd-cron-otro')"><div class="chk-box"></div>Otras</div>
+        </div>
+        <div class="cond" id="cd-cron-otro" style="margin-top:6px;">
+          <label>Especificar otras</label>
+          <input type="text" id="f-cron-otro" placeholder="Describir antecedentes adicionales...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. EQUIPO -->
+  <div class="fc" id="sec-equipo">
+    <div class="fch rojo">🛠️ Equipo o soporte requerido</div>
+    <div class="fcb">
+      <div class="f">
+        <label>Requiere equipo o soporte especial *</label>
+        <div class="tg">
+          <div class="tb" id="eq-no" onclick="setEquipo('NO')">No</div>
+          <div class="tb" id="eq-si" onclick="setEquipo('SI')">Si — Requiere equipo</div>
+        </div>
+      </div>
+      <div class="cond" id="cd-equipo">
+        <!-- OXIGENO -->
+        <div class="eq-row" id="eqr-oxigeno">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-oxigeno')">
+          <span class="eq-lbl">Oxigeno</span>
+          <div class="eq-extra">
+            <label style="font-size:11px;margin-bottom:4px;">Litros por minuto (L/min) *</label>
+            <input type="number" placeholder="Ej: 3" style="padding:7px 10px;font-size:13px;border:1.5px solid var(--border);border-radius:6px;background:#fff;" id="eq-oxigeno-lpm">
+          </div>
+        </div>
+        <!-- VENTILADOR -->
+        <div class="eq-row" id="eqr-ventilador">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-ventilador')">
+          <span class="eq-lbl">Ventilador</span>
+        </div>
+        <!-- MONITOR -->
+        <div class="eq-row" id="eqr-monitor">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-monitor')">
+          <span class="eq-lbl">Monitor de Signos Vitales</span>
+        </div>
+        <!-- DESFIBRILADOR -->
+        <div class="eq-row" id="eqr-desfibrilador">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-desfibrilador')">
+          <span class="eq-lbl">Desfibrilador</span>
+        </div>
+        <!-- CPAP -->
+        <div class="eq-row" id="eqr-cpap">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-cpap')">
+          <span class="eq-lbl">CPAP</span>
+        </div>
+        <!-- INCUBADORA -->
+        <div class="eq-row" id="eqr-incubadora">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-incubadora')">
+          <span class="eq-lbl">Incubadora Neonatal</span>
+        </div>
+        <!-- BOMBAS -->
+        <div class="eq-row" id="eqr-bombas">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-bombas')">
+          <span class="eq-lbl">Bombas de Infusion</span>
+          <div class="eq-extra">
+            <label style="font-size:11px;margin-bottom:4px;">Cantidad de bombas</label>
+            <select id="eq-bombas-cant" onchange="generarInputsBombas()" style="padding:7px 10px;font-size:13px;border:1.5px solid var(--border);border-radius:6px;background:#fff;margin-bottom:6px;">
+              <option value="">-- Cuantas bombas --</option>
+              <option value="1">1 bomba</option>
+              <option value="2">2 bombas</option>
+              <option value="3">3 bombas</option>
+              <option value="4">4 bombas</option>
+              <option value="5">5 bombas</option>
+            </select>
+            <div class="bombas-inputs" id="bombas-inputs"></div>
+          </div>
+        </div>
+        <!-- OTRO -->
+        <div class="eq-row" id="eqr-otro">
+          <input class="eq-chk" type="checkbox" onchange="tEq(this,'eqr-otro')">
+          <span class="eq-lbl">Medicamentos en infusion / Otro equipo especial</span>
+          <div class="eq-extra">
+            <input type="text" placeholder="Describir medicamento o equipo adicional..." id="eq-otro-desc" style="padding:7px 10px;font-size:13px;border:1.5px solid var(--border);border-radius:6px;background:#fff;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. INFO ADMINISTRATIVA -->
+  <div class="fc" id="sec-admin">
+    <div class="fch gris">💳 Informacion administrativa</div>
+    <div class="fcb">
+      <div class="f"><label>Metodo de pago *</label>
+        <div class="pago-grid" id="f-pago">
+          <div class="pago-btn" onclick="setPago('Efectivo',this)"><div class="pago-ico">💵</div>Efectivo</div>
+          <div class="pago-btn" onclick="setPago('Tarjeta',this)"><div class="pago-ico">💳</div>Tarjeta</div>
+          <div class="pago-btn" onclick="setPago('Transferencia',this)"><div class="pago-ico">🏦</div>Transferencia</div>
+          <div class="pago-btn" onclick="setPago('Cuenta Hospital',this)"><div class="pago-ico">🏥</div>Cuenta Hospital</div>
+        </div>
+      </div>
+      <div class="cond" id="cd-cuenta"><label>Numero de cuenta</label><input type="text" id="f-cuenta" placeholder="No. de cuenta del hospital"></div>
+      <div class="f2">
+        <div class="f"><label>Familiar responsable *</label><input type="text" id="f-fam-nom" placeholder="Nombre"></div>
+        <div class="f"><label>Parentesco</label><input type="text" id="f-fam-par" placeholder="Ej: Hijo, esposa..."></div>
+      </div>
+      <div class="f"><label>Telefono de contacto familiar *</label><input type="tel" id="f-fam-tel" placeholder="10 digitos"></div>
+    </div>
+  </div>
+
+  <!-- 10. QUIEN SOLICITA -->
+  <div class="fc" id="sec-solicitante">
+    <div class="fch azul">🏢 Quien solicita el servicio</div>
+    <div class="fcb">
+      <div class="f"><label>Nombre completo *</label><input type="text" id="f-sol-nom" placeholder="Tu nombre completo"></div>
+      <div class="f"><label>Area / Departamento</label><input type="text" id="f-sol-area" placeholder="Ej: UCI, Urgencias, Piso 3..."></div>
+      <div class="f"><label>Telefono / Extension *</label><input type="tel" id="f-sol-tel" placeholder="Numero o extension"></div>
+    </div>
+  </div>
+
+  <!-- ERROR BANNER -->
+  <div class="error-banner" id="error-banner"></div>
+
+  <div class="alerta" style="margin-bottom:12px;">
+    <span class="alerta-ico">🛡️</span>
+    <span><strong>Importante:</strong> La informacion incompleta genera retrasos. La seguridad del paciente comienza con una solicitud completa.</span>
+  </div>
+
+  <button class="btn-gen" onclick="intentarGenerar()">📲 Generar solicitud para WhatsApp</button>
+
+  <div id="wa-preview" style="display:none;margin-top:8px;">
+    <div class="wa-box">
+      <div class="wa-lbl">Vista previa — <span>edita si es necesario</span></div>
+      <textarea class="wa-ta" id="wa-texto"></textarea>
+    </div>
+    <div class="wa-acts">
+      <button class="bwa bcp" onclick="copiar()">📋 Copiar</button>
+      <button class="bwa bsn" onclick="abrirModal()">📲 Enviar a coordinacion</button>
+    </div>
+    <button class="brst" onclick="resetForm()">🗑️ Limpiar formulario</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>AMBULANCIAS STEN</strong> — Servicios de Traslados Especializados del Norte<br>
+  Coordinacion 24/7: <strong>89-91-22-74-89</strong>
+</div>
+
+<script>
+// ── ESTADO ──
+let S={unidad:'',clasif:'',tipoMedico:'',estado:'',critico:'NO',medico:'NO',cronicas:'',equipo:'',pago:'',prog:'hoy',signos:'NO',tsInicio:new Date()};
+
+// ── TIMESTAMP ──
+function fmtTs(d){return d.toLocaleDateString('es-MX',{weekday:'short',day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});}
+function fmtTsISO(d){const p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
+document.getElementById('ts-display').textContent=fmtTs(S.tsInicio);
+setInterval(()=>{S.tsInicio=new Date();document.getElementById('ts-display').textContent=fmtTs(S.tsInicio);},1000);
+
+// ── URL PARAMS / NFC ──
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const u=params.get('unidad');
+  if(u){
+    const map={'HLF':'HLF24/7','HLF24/7':'HLF24/7','HES':'HES','OTRO':'OTRO'};
+    const val=map[u.toUpperCase()]||u.toUpperCase();
+    const sel=document.getElementById('unidad-select');
+    sel.value=val;sel.disabled=true;
+    document.getElementById('unidad-select-wrap').style.display='none';
+    document.getElementById('unidad-locked-view').style.display='block';
+    document.getElementById('unidad-locked-txt').textContent=val;
+    S.unidad=val;setUnidad(val);
+  }
+})();
+
+function setUnidad(val){
+  S.unidad=val;
+  document.getElementById('cd-unidad-otro').classList.toggle('on',val==='OTRO');
+  actualizarHero(val);actualizarBadge(val);
+}
+function actualizarHero(val){const l={'HLF24/7':'Hospital Las Fuentes — HLF24/7','HES':'Hospital Santander — HES','OTRO':'Otra Unidad'};document.getElementById('hero-unidad-txt').textContent=l[val]||val||'Selecciona tu unidad de negocio';}
+function actualizarBadge(val){document.getElementById('unidad-badge').textContent=val||'-- Unidad --';}
+
+// ── PROGRAMACION ──
+function setProg(val){
+  S.prog=val;
+  document.getElementById('prog-hoy').classList.toggle('on-azul',val==='hoy');
+  document.getElementById('prog-hoy').classList.remove('on-verde');
+  document.getElementById('prog-prog').classList.toggle('on-verde',val==='programado');
+  document.getElementById('prog-prog').classList.remove('on-azul');
+  document.getElementById('cd-prog-fecha').classList.toggle('on',val==='programado');
+  if(val==='programado'){document.getElementById('f-fecha-prog').min=new Date().toISOString().split('T')[0];}
+}
+
+// ── CLASIFICACION ──
+function setClasif(el,val){
+  S.clasif=val;
+  document.querySelectorAll('#clasif-chips .chip').forEach(c=>c.classList.remove('on','on-rojo'));
+  el.classList.add(val==='Urgencia'?'on-rojo':'on');
+  document.getElementById('cd-estudio').classList.toggle('on',val==='Estudio');
+  document.getElementById('cd-interhosp').classList.toggle('on',val==='Interhospitalario');
+  document.getElementById('cd-otro-clasif').classList.toggle('on',val==='Otro');
+}
+function setTipoMedico(val){
+  S.tipoMedico=val;
+  document.getElementById('tm-basico').classList.toggle('on-azul',val==='Basico');
+  document.getElementById('tm-basico').classList.remove('on-naranja');
+  document.getElementById('tm-ti').classList.toggle('on-naranja',val==='Terapia Intensiva');
+  document.getElementById('tm-ti').classList.remove('on-azul');
+}
+
+// ── EVALUACION ──
+function setEstado(val){S.estado=val;document.getElementById('est-estable').classList.toggle('on-verde',val==='ESTABLE');document.getElementById('est-estable').classList.remove('on-rojo');document.getElementById('est-inestable').classList.toggle('on-rojo',val==='INESTABLE');document.getElementById('est-inestable').classList.remove('on-verde');}
+function setCritico(val){S.critico=val;document.getElementById('crit-no').classList.toggle('on-azul',val==='NO');document.getElementById('crit-no').classList.remove('on-naranja');document.getElementById('crit-si').classList.toggle('on-naranja',val==='SI');document.getElementById('crit-si').classList.remove('on-azul');document.getElementById('alerta-critico').style.display=val==='SI'?'flex':'none';}
+function setMedico(val){S.medico=val;document.getElementById('med-no').classList.toggle('on-verde',val==='NO');document.getElementById('med-no').classList.remove('on-azul');document.getElementById('med-si').classList.toggle('on-azul',val==='SI');document.getElementById('med-si').classList.remove('on-verde');document.getElementById('cd-medico').classList.toggle('on',val==='SI');}
+function setCronicas(val){S.cronicas=val;document.getElementById('cron-no').classList.toggle('on-verde',val==='NO');document.getElementById('cron-no').classList.remove('on-azul');document.getElementById('cron-si').classList.toggle('on-azul',val==='SI');document.getElementById('cron-si').classList.remove('on-verde');document.getElementById('cd-cronicas').classList.toggle('on',val==='SI');}
+function setEquipo(val){S.equipo=val;document.getElementById('eq-no').classList.toggle('on-verde',val==='NO');document.getElementById('eq-no').classList.remove('on-azul');document.getElementById('eq-si').classList.toggle('on-azul',val==='SI');document.getElementById('eq-si').classList.remove('on-verde');document.getElementById('cd-equipo').classList.toggle('on',val==='SI');}
+
+// ── CHIPS / CHECKBOXES ──
+function tChk(el){el.classList.toggle('on');const b=el.querySelector('.chk-box');b.textContent=el.classList.contains('on')?'✓':'';}
+function tChkOtro(el,boxId){el.classList.toggle('on');const b=el.querySelector('.chk-box');b.textContent=el.classList.contains('on')?'✓':'';document.getElementById(boxId).classList.toggle('on',el.classList.contains('on'));}
+function tEq(cb,rowId){document.getElementById(rowId).classList.toggle('on',cb.checked);}
+
+// ── PAGO ──
+function setPago(tipo,el){S.pago=tipo;document.querySelectorAll('#f-pago .pago-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('cd-cuenta').classList.toggle('on',tipo==='Cuenta Hospital');}
+
+// ── EDAD AUTO ──
+function calcEdad(){const v=document.getElementById('f-fnac').value;if(!v)return;const h=new Date(),n=new Date(v);let e=h.getFullYear()-n.getFullYear();const m=h.getMonth()-n.getMonth();if(m<0||(m===0&&h.getDate()<n.getDate()))e--;if(e>=0&&e<120)document.getElementById('f-edad').value=e;}
+
+// ── BOMBAS DINAMICAS ──
+function generarInputsBombas(){
+  const cant=parseInt(document.getElementById('eq-bombas-cant').value)||0;
+  const cont=document.getElementById('bombas-inputs');
+  cont.innerHTML='';
+  for(let i=1;i<=cant;i++){
+    const inp=document.createElement('input');
+    inp.type='text';inp.className='bomba-input';
+    inp.placeholder='Bomba '+i+': Ej. Norepinefrina 0.1mcg/kg/min';
+    inp.id='bomba-'+i;
+    cont.appendChild(inp);
+  }
+}
+
+// ── HELPERS ──
+function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function go(id){const v=gv(id);return v||null;}
+function gF(id){const v=gv(id);if(!v)return null;const[y,m,d]=v.split('-');return d+'/'+m+'/'+y;}
+function ln(l,v){return v?l+': '+v+'\n':'';}
+function blk(t){return '\n'+t.toUpperCase()+'\n'+'─'.repeat(Math.min(t.length,26))+'\n';}
+
+function getCronicas(){
+  if(S.cronicas!=='SI')return[];
+  const ch=Array.from(document.querySelectorAll('#f-cronicas .chk-item.on')).map(c=>c.textContent.replace('✓','').trim()).filter(t=>t!=='Otras');
+  const o=gv('f-cron-otro');if(o)ch.push(o);
+  return ch;
+}
+function getEquipo(){
+  if(S.equipo!=='SI')return[];
+  const its=[];
+  if(document.getElementById('eqr-oxigeno').classList.contains('on')){const lpm=gv('eq-oxigeno-lpm');its.push('Oxigeno'+(lpm?' a '+lpm+' L/min':''));}
+  if(document.getElementById('eqr-ventilador').classList.contains('on'))its.push('Ventilador');
+  if(document.getElementById('eqr-monitor').classList.contains('on'))its.push('Monitor de Signos Vitales');
+  if(document.getElementById('eqr-desfibrilador').classList.contains('on'))its.push('Desfibrilador');
+  if(document.getElementById('eqr-cpap').classList.contains('on'))its.push('CPAP');
+  if(document.getElementById('eqr-incubadora').classList.contains('on'))its.push('Incubadora Neonatal');
+  if(document.getElementById('eqr-bombas').classList.contains('on')){
+    const cant=parseInt(gv('eq-bombas-cant'))||0;
+    const bombas=[];
+    for(let i=1;i<=cant;i++){const v=gv('bomba-'+i);bombas.push(v||'Bomba '+i);}
+    its.push('Bombas de Infusion (x'+cant+'): '+bombas.join(' | '));
+  }
+  if(document.getElementById('eqr-otro').classList.contains('on')){const d=gv('eq-otro-desc');if(d)its.push(d);}
+  return its;
+}
+function getSV(){
+  const tas=gv('sv-ta-s'),tad=gv('sv-ta-d'),fc=gv('sv-fc'),fr=gv('sv-fr'),spo2=gv('sv-spo2'),dxt=gv('sv-dxt'),temp=gv('sv-temp');
+  const parts=[];
+  if(tas&&tad)parts.push('TA: '+tas+'/'+tad+' mmHg');
+  if(fc)parts.push('FC: '+fc+' LPM');
+  if(fr)parts.push('FR: '+fr+' RPM');
+  if(spo2)parts.push('SpO2: '+spo2+'%');
+  if(dxt)parts.push('DXT: '+dxt+' mg/dL');
+  if(temp)parts.push('Temp: '+temp+'°C');
+  return parts;
+}
+function getUnidadLabel(){if(S.unidad==='OTRO')return gv('unidad-otro-txt')||'OTRO';return S.unidad;}
+
+// ── VALIDACION ──
+function limpiarErrores(){document.querySelectorAll('.error').forEach(el=>el.classList.remove('error'));document.getElementById('error-banner').classList.remove('on');}
+function marcarError(id,msg){
+  const el=document.getElementById(id);
+  if(el){el.classList.add('error');el.scrollIntoView({behavior:'smooth',block:'center'});}
+  const banner=document.getElementById('error-banner');
+  banner.innerHTML='⚠️ <strong>Campo incompleto:</strong> '+msg;
+  banner.classList.add('on');
+  banner.scrollIntoView({behavior:'smooth',block:'center'});
+  return false;
+}
+function validar(){
+  limpiarErrores();
+  // UNIDAD
+  if(!S.unidad)return marcarError('unidad-select','Selecciona la Unidad de Negocio');
+  // PROGRAMACION
+  if(S.prog==='programado'){
+    if(!gv('f-fecha-prog'))return marcarError('f-fecha-prog','Indica la fecha programada del traslado');
+    if(!gv('f-hora-prog'))return marcarError('f-hora-prog','Indica la hora programada del traslado');
+  }
+  // CLASIFICACION
+  if(!S.clasif)return marcarError('clasif-chips','Selecciona la Clasificacion del traslado');
+  if(!S.tipoMedico)return marcarError('tm-basico','Selecciona el Tipo de traslado medico (Basico / Terapia Intensiva)');
+  if(S.clasif==='Estudio'&&!gv('f-estudio'))return marcarError('f-estudio','Indica que estudio se realizara');
+  if(S.clasif==='Interhospitalario'&&!gv('f-hosp-receptor'))return marcarError('f-hosp-receptor','Indica el hospital receptor confirmado');
+  // DESTINO — unico campo de ubicacion
+  if(!gv('f-destino'))return marcarError('f-destino','La ubicacion de DESTINO es obligatoria');
+  // PACIENTE — todos obligatorios
+  if(!gv('f-nombre'))return marcarError('f-nombre','El nombre del paciente es obligatorio');
+  if(!gv('f-hab'))return marcarError('f-hab','La habitacion o ubicacion actual del paciente es obligatoria');
+  if(!gv('f-edad'))return marcarError('f-edad','La edad del paciente es obligatoria');
+  if(!gv('f-fnac'))return marcarError('f-fnac','La fecha de nacimiento del paciente es obligatoria');
+  if(!gv('f-peso'))return marcarError('f-peso','El peso aproximado del paciente es obligatorio');
+  if(!gv('f-diag'))return marcarError('f-diag','El diagnostico actual del paciente es obligatorio');
+  // ESTADO
+  if(!S.estado)return marcarError('est-estable','Selecciona el estado del paciente (Estable / Inestable)');
+  // MEDICO — si SI, los 3 obligatorios
+  if(S.medico==='SI'){
+    if(!gv('f-med-nom'))return marcarError('f-med-nom','El nombre del medico acompanante es obligatorio');
+    if(!gv('f-med-tel'))return marcarError('f-med-tel','El telefono del medico acompanante es obligatorio');
+    if(!gv('f-med-ced'))return marcarError('f-med-ced','La cedula profesional del medico es obligatoria');
+  }
+  // SIGNOS VITALES — siempre obligatorios
+  if(!gv('sv-ta-s')||!gv('sv-ta-d'))return marcarError('sv-ta-s','Ingresa la Tension Arterial (Sistolica y Diastolica)');
+  if(!gv('sv-fc'))return marcarError('sv-fc','Ingresa la Frecuencia Cardiaca (FC)');
+  if(!gv('sv-fr'))return marcarError('sv-fr','Ingresa la Frecuencia Respiratoria (FR)');
+  if(!gv('sv-spo2'))return marcarError('sv-spo2','Ingresa la Saturacion de Oxigeno (SpO2)');
+  if(!gv('sv-dxt'))return marcarError('sv-dxt','Ingresa la Glucemia Capilar (DXT)');
+  if(!gv('sv-temp'))return marcarError('sv-temp','Ingresa la Temperatura');
+  // CRONICAS
+  if(!S.cronicas)return marcarError('cron-no','Indica si el paciente padece enfermedades cronicas');
+  // EQUIPO
+  if(!S.equipo)return marcarError('eq-no','Indica si requiere equipo o soporte especial');
+  if(S.equipo==='SI'){
+    if(document.getElementById('eqr-oxigeno').classList.contains('on')&&!gv('eq-oxigeno-lpm'))return marcarError('eq-oxigeno-lpm','Especifica los litros por minuto de Oxigeno');
+    if(document.getElementById('eqr-bombas').classList.contains('on')){
+      if(!gv('eq-bombas-cant'))return marcarError('eq-bombas-cant','Indica la cantidad de bombas de infusion');
+      const cant=parseInt(gv('eq-bombas-cant'))||0;
+      for(let i=1;i<=cant;i++){if(!gv('bomba-'+i))return marcarError('bomba-'+i,'Especifica el medicamento de la Bomba '+i);}
+    }
+  }
+  // PAGO
+  if(!S.pago)return marcarError('f-pago','Selecciona el metodo de pago');
+  // FAMILIAR
+  if(!gv('f-fam-nom'))return marcarError('f-fam-nom','El nombre del familiar responsable es obligatorio');
+  if(!gv('f-fam-tel'))return marcarError('f-fam-tel','El telefono del familiar es obligatorio');
+  // SOLICITANTE
+  if(!gv('f-sol-nom'))return marcarError('f-sol-nom','El nombre de quien solicita es obligatorio');
+  if(!gv('f-sol-tel'))return marcarError('f-sol-tel','El telefono de quien solicita es obligatorio');
+  return true;
+}
+
+// ── GENERAR MENSAJE ──
+function intentarGenerar(){
+  if(!validar())return;
+  limpiarErrores();
+  const cron=getCronicas(),eq=getEquipo(),sv=getSV();
+  const ts=new Date();
+  const idSrv='SRV-'+fmtTsISO(ts).replace(/[^0-9]/g,'');
+
+  let m='SOLICITUD DE AMBULANCIA\n';
+  m+=getUnidadLabel()+'\n';
+  if(S.prog==='hoy'){
+    m+='Fecha: '+ts.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'\n';
+    m+='Hora de solicitud: '+ts.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:true})+'\n';
+    m+='Programacion: HOY\n';
+  } else {
+    const fp=gv('f-fecha-prog');const hp=gv('f-hora-prog');
+    const[y,mo,d]=fp.split('-');
+    m+='Fecha de solicitud: '+ts.toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})+'\n';
+    m+='*** TRASLADO PROGRAMADO ***\n';
+    m+='Fecha programada: '+d+'/'+mo+'/'+y+'\n';
+    m+='Hora programada: '+hp+'\n';
+  }
+  m+='ID: '+idSrv+'\n';
+
+  m+=blk('Clasificacion del traslado');
+  m+='Clasificacion: '+S.clasif+(S.clasif==='Otro'&&gv('f-otro-clasif')?' ('+gv('f-otro-clasif')+')':'')+'\n';
+  m+='Tipo medico: '+S.tipoMedico+'\n';
+  if(S.clasif==='Estudio') m+=ln('Estudio',go('f-estudio'));
+  if(S.clasif==='Interhospitalario') m+=ln('Hospital receptor',go('f-hosp-receptor'));
+
+  m+=blk('Destino');
+  m+='Destino: '+gv('f-destino')+'\n';
+
+  m+=blk('Paciente');
+  m+='Nombre: '+gv('f-nombre')+'\n';
+  m+='Habitacion: '+gv('f-hab')+'\n';
+  m+='Edad: '+gv('f-edad')+' años\n';
+  m+='Peso: '+gv('f-peso')+' kg\n';
+  m+='F. Nac: '+gF('f-fnac')+'\n';
+  m+='Diagnostico: '+gv('f-diag')+'\n';
+  m+='Estado: '+S.estado+'\n';
+  if(S.critico==='SI') m+='*** PACIENTE CRITICO ***\n';
+  if(S.cronicas==='SI'&&cron.length) m+='Enf. cronicas: '+cron.join(', ')+'\n';
+  else if(S.cronicas==='NO') m+='Enf. cronicas: Ninguna\n';
+
+  if(S.medico==='SI'){m+=blk('Medico acompanante');m+=ln('Nombre',go('f-med-nom'));m+=ln('Tel',go('f-med-tel'));m+=ln('Cedula',go('f-med-ced'));}
+
+  // Signos vitales — siempre obligatorios
+  if(sv.length){m+=blk('Signos vitales');m+=sv.join('\n')+'\n';}
+  if(go('f-notas-med')){m+=blk('Notas para paramedicos');m+=gv('f-notas-med')+'\n';}
+
+  if(S.equipo==='SI'&&eq.length){m+=blk('Equipo requerido');m+=eq.map(e=>'- '+e).join('\n')+'\n';}
+  else if(S.equipo==='NO') m+='\nEquipo especial: No requerido\n';
+
+  m+=blk('Pago y contacto');
+  m+='Pago: '+S.pago+'\n';
+  if(S.pago==='Cuenta Hospital'&&go('f-cuenta')) m+='No. cuenta: '+gv('f-cuenta')+'\n';
+  m+=ln('Familiar',go('f-fam-nom'));
+  if(go('f-fam-par')) m+='Parentesco: '+gv('f-fam-par')+'\n';
+  m+=ln('Tel familiar',go('f-fam-tel'));
+
+  m+=blk('Solicitante');
+  m+=ln('Nombre',go('f-sol-nom'));
+  if(go('f-sol-area')) m+='Area: '+gv('f-sol-area')+'\n';
+  m+=ln('Tel/Ext',go('f-sol-tel'));
+
+  // LEYENDA PREESCRITA OBLIGATORIA
+  m+='\n----------------------------------\n';
+  m+='📌 ASIGNACION Y COTIZACION (POR COORDINACION)\n';
+  m+='• Unidad asignada: [ Pendiente por Coordinacion ]\n';
+  m+='• Paramedicos asignados: [ Pendiente por Coordinacion ]\n';
+  m+='• Costo final: [ Pendiente por Coordinacion ]\n';
+  m+='⚠️ NOTA: La unidad, los paramedicos y el costo final se daran por Coordinacion hasta validar la informacion recibida.\n';
+  m+='----------------------------------\n';
+  m+='Ambulancias STEN | 89-91-22-74-89';
+
+  document.getElementById('wa-texto').value=m;
+  document.getElementById('wa-preview').style.display='block';
+  setTimeout(()=>document.getElementById('wa-preview').scrollIntoView({behavior:'smooth',block:'start'}),100);
+  if(window.guardarSolicitud)window.guardarSolicitud(idSrv,m);
+}
+
+// ── MODAL ──
+let modalChkOk=false;
+function abrirModal(){document.getElementById('modal-overlay').classList.add('on');modalChkOk=false;document.getElementById('modal-chk-row').classList.remove('on');document.getElementById('modal-chkbox').textContent='';document.getElementById('btn-wa-final').disabled=true;document.getElementById('btn-wa-final').classList.remove('on');}
+function cerrarModal(){document.getElementById('modal-overlay').classList.remove('on');}
+function toggleModalChk(){
+  modalChkOk=!modalChkOk;
+  document.getElementById('modal-chk-row').classList.toggle('on',modalChkOk);
+  document.getElementById('modal-chkbox').textContent=modalChkOk?'✓':'';
+  document.getElementById('btn-wa-final').disabled=!modalChkOk;
+  document.getElementById('btn-wa-final').classList.toggle('on',modalChkOk);
+}
+function copiar(){const txt=document.getElementById('wa-texto').value;if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>alert('Mensaje copiado'));}else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Copiado');}}
+function enviarWA(){const txt=document.getElementById('wa-texto').value;window.open('https://wa.me/528991227489?text='+encodeURIComponent(txt),'_blank');cerrarModal();}
+function resetForm(){
+  if(!confirm('Limpiar todos los campos?'))return;
+  document.querySelectorAll('input:not([disabled]),textarea,select:not([disabled])').forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value='';});
+  document.querySelectorAll('.chk-item,.chip').forEach(el=>{el.classList.remove('on','on-rojo');const b=el.querySelector('.chk-box');if(b)b.textContent='';});
+  document.querySelectorAll('.pago-btn,.tb').forEach(el=>el.classList.remove('on','on-verde','on-rojo','on-azul','on-naranja'));
+  document.querySelectorAll('.eq-row').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.cond').forEach(el=>el.classList.remove('on'));
+  document.getElementById('alerta-critico').style.display='none';
+  document.getElementById('wa-preview').style.display='none';
+  document.getElementById('bombas-inputs').innerHTML='';
+  limpiarErrores();
+  S={unidad:S.unidad,clasif:'',tipoMedico:'',estado:'',critico:'NO',medico:'NO',cronicas:'',equipo:'',pago:'',prog:'hoy',signos:'SI',tsInicio:new Date()};
+  setProg('hoy');
+}
+</script>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getFirestore,collection,addDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyB9O7yGD0qZzyde9EUN0WjyFHGHsTzQO1o",authDomain:"ambulancias-sten-forms.firebaseapp.com",projectId:"ambulancias-sten-forms",storageBucket:"ambulancias-sten-forms.firebasestorage.app",messagingSenderId:"195916695083",appId:"1:195916695083:web:dd5bbeb825065c86d48c6e"};
+const app=initializeApp(cfg);
+const db=getFirestore(app);
+window.guardarSolicitud=async function(idSrv,msg){
+  try{await addDoc(collection(db,'solicitudes'),{ID_Servicio:idSrv,fecha:new Date().toISOString(),programacion_tipo:document.getElementById('prog-hoy').classList.contains('on-azul')?'Hoy':'Programado',fecha_programada:document.getElementById('f-fecha-prog').value||'',hora_programada:document.getElementById('f-hora-prog').value||'',unidad:document.getElementById('unidad-select').value||'',paciente:document.getElementById('f-nombre').value.trim(),diagnostico:document.getElementById('f-diag').value.trim(),tipo:document.getElementById('tm-basico').classList.contains('on-azul')?'Basico':'Terapia Intensiva',solicitante:document.getElementById('f-sol-nom').value.trim(),mensaje:msg});console.log('Guardado:',idSrv);}
+  catch(e){console.error(e);}
+};
+</script>
+</body>
+</html>
