@@ -1,0 +1,25 @@
+{
+  "name": "RouteIQ SALUD — Ambulancias STEN",
+  "short_name": "RouteIQ",
+  "description": "Plataforma de coordinacion de traslados Ambulancias STEN",
+  "start_url": "https://ambulanciasstenadmon-netizen.github.io/ambulancias-sten/",
+  "scope": "https://ambulanciasstenadmon-netizen.github.io/ambulancias-sten/",
+  "display": "standalone",
+  "background_color": "#0B131F",
+  "theme_color": "#00A878",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%2300A878'/><circle cx='60' cy='96' r='24' fill='white'/><circle cx='148' cy='44' r='24' fill='white'/><circle cx='148' cy='148' r='24' fill='white'/><line x1='82' y1='83' x2='126' y2='57' stroke='white' stroke-width='12' stroke-linecap='round'/><line x1='82' y1='109' x2='126' y2='135' stroke='white' stroke-width='12' stroke-linecap='round'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%2300A878'/><circle cx='160' cy='256' r='60' fill='white'/><circle cx='392' cy='120' r='60' fill='white'/><circle cx='392' cy='392' r='60' fill='white'/><line x1='218' y1='220' x2='334' y2='156' stroke='white' stroke-width='28' stroke-linecap='round'/><line x1='218' y1='292' x2='334' y2='356' stroke='white' stroke-width='28' stroke-linecap='round'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
