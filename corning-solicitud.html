@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00447A">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Corning | Portal de Gestión Médica Industrial</title>
+
+  <script>
+  /* SIN SERVICE WORKER / SIN CACHE PWA
+     Este portal no registra ningún Service Worker. Si otra app del mismo sitio
+     (por ejemplo, un sw.js existente) controla esta página, se desactiva para esta
+     ruta, se borra la copia guardada de esta página y se recarga una sola vez
+     para cargar todo directo del servidor. */
+  (function () {
+    if (!('serviceWorker' in navigator)) return;
+    var FLAG = 'corning_sw_limpio';
+    var controlada = !!navigator.serviceWorker.controller;
+    var pagina = location.pathname;
+
+    function borrarCopiaDeEstaPagina() {
+      if (!('caches' in window)) return Promise.resolve();
+      return caches.keys().then(function (nombres) {
+        return Promise.all(nombres.map(function (n) {
+          return caches.open(n).then(function (c) {
+            return c.keys().then(function (reqs) {
+              return Promise.all(reqs.filter(function (r) {
+                return new URL(r.url).pathname === pagina;
+              }).map(function (r) { return c.delete(r); }));
+            });
+          });
+        }));
+      });
+    }
+
+    try {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.filter(function (reg) {
+          return location.href.indexOf(reg.scope) === 0;
+        }).map(function (reg) { return reg.unregister(); }));
+      })
+      .then(borrarCopiaDeEstaPagina)
+      .then(function () {
+        var yaRecargo = false;
+        try { yaRecargo = sessionStorage.getItem(FLAG) === '1'; } catch (e) {}
+        if (controlada && !yaRecargo) {
+          try { sessionStorage.setItem(FLAG, '1'); } catch (e) {}
+          location.reload();
+        }
+      })
+      .catch(function (e) { console.warn('[Portal Corning] Limpieza de Service Worker omitida:', e); });
+    } catch (e) {}
+  })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+/* Estilos compilados para produccion (Tailwind CSS v3.4) */
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.card{border-radius:.5rem;border-width:1px;--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1));--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1));--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;border-bottom-width:1px;--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1));padding:1rem 1.25rem}@media (min-width:640px){.card-head{padding-left:1.5rem;padding-right:1.5rem}}.card-title{font-weight:600;text-transform:uppercase;letter-spacing:.025em;color:rgb(15 23 42/var(--tw-text-opacity,1))}.card-desc,.card-title{font-size:.875rem;line-height:1.25rem;--tw-text-opacity:1}.card-desc{margin-top:.125rem;color:rgb(100 116 139/var(--tw-text-opacity,1))}.card-body{padding:1.25rem}@media (min-width:640px){.card-body{padding-left:1.5rem;padding-right:1.5rem}}.label{margin-bottom:.375rem;display:block;font-size:.875rem;line-height:1.25rem;font-weight:500;--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.req:after{content:" *"}.input{display:block;width:100%;border-radius:.375rem;border-width:1px;--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity,1));--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1));padding:.625rem .875rem;font-size:.875rem;line-height:1.25rem;--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1));--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow);transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.input::-moz-placeholder{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.input::placeholder{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.input:focus{--tw-border-opacity:1;border-color:rgb(0 86 150/var(--tw-border-opacity,1));outline:2px solid transparent;outline-offset:2px;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000);--tw-ring-color:rgba(0,86,150,.15)}.input:disabled{cursor:not-allowed;--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1));--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.input-error,.input-error:focus{--tw-border-opacity:1;border-color:rgb(185 28 28/var(--tw-border-opacity,1))}.input-error:focus{--tw-ring-color:rgba(185,28,28,.15)}.err{display:none;font-weight:500;color:rgb(185 28 28/var(--tw-text-opacity,1))}.err,.hint{margin-top:.375rem;font-size:.75rem;line-height:1rem;--tw-text-opacity:1}.hint{color:rgb(100 116 139/var(--tw-text-opacity,1))}.seg-wrap{display:inline-flex;width:100%;border-radius:.375rem;--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1));padding:.25rem}@media (min-width:640px){.seg-wrap{width:auto}}.seg{flex:1 1 0%;border-radius:.25rem;padding:.5rem 1rem;font-size:.875rem;line-height:1.25rem;font-weight:500;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.seg:focus{outline:2px solid transparent;outline-offset:2px}.seg:focus-visible{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000);--tw-ring-color:rgba(0,86,150,.4)}@media (min-width:640px){.seg{min-width:120px;flex:none}}.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:.375rem;padding:.625rem 1rem;font-size:.875rem;line-height:1.25rem;font-weight:600;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.btn:focus{outline:2px solid transparent;outline-offset:2px}.btn:focus-visible{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.btn:disabled{cursor:not-allowed;opacity:.5}.btn-primary{--tw-bg-opacity:1;background-color:rgb(0 86 150/var(--tw-bg-opacity,1));--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1));--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.btn-primary:hover{--tw-bg-opacity:1;background-color:rgb(0 68 122/var(--tw-bg-opacity,1))}.btn-primary:focus-visible{--tw-ring-color:rgba(0,86,150,.25)}.btn-danger{--tw-bg-opacity:1;background-color:rgb(185 28 28/var(--tw-bg-opacity,1));--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1));--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.btn-danger:hover{--tw-bg-opacity:1;background-color:rgb(153 27 27/var(--tw-bg-opacity,1))}.btn-danger:focus-visible{--tw-ring-color:rgba(185,28,28,.25)}.btn-outline{border-width:1px;--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity,1));--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1));--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1));--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.btn-outline:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.btn-outline:focus-visible{--tw-ring-color:rgba(203,213,225,.5)}.sede-btn{border-radius:.375rem;border-width:1px;padding:.625rem .75rem;text-align:left;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.sede-btn:focus{outline:2px solid transparent;outline-offset:2px}.sede-btn:focus-visible{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000);--tw-ring-color:rgba(0,86,150,.2)}.pill{display:inline-flex;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;user-select:none;align-items:center;border-radius:9999px;border-width:1px;--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity,1));--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1));padding:.375rem .875rem;font-size:.875rem;line-height:1.25rem;font-weight:500;--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1));--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow);transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.pill:hover{--tw-border-opacity:1;border-color:rgb(148 163 184/var(--tw-border-opacity,1))}.pill:has(:checked){--tw-border-opacity:1;border-color:rgb(0 86 150/var(--tw-border-opacity,1));--tw-bg-opacity:1;background-color:rgb(0 86 150/var(--tw-bg-opacity,1));--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.pill:has(:focus-visible){--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000);--tw-ring-color:rgba(0,86,150,.2)}.check-row{display:flex;cursor:pointer;align-items:center;gap:.75rem;border-radius:.375rem;border-width:1px;--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1));--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1));padding:.75rem 1rem;font-size:.875rem;line-height:1.25rem;font-weight:500;--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1));transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.check-row:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.check-row:has(:checked){border-color:rgba(0,86,150,.4);--tw-bg-opacity:1;background-color:rgb(232 241 248/var(--tw-bg-opacity,1));--tw-text-opacity:1;color:rgb(0 86 150/var(--tw-text-opacity,1))}.check{height:1rem;width:1rem;flex-shrink:0;cursor:pointer;accent-color:#005696}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.z-50{z-index:50}.col-span-2{grid-column:span 2/span 2}.mx-auto{margin-left:auto;margin-right:auto}.mb-1\.5{margin-bottom:.375rem}.mt-0\.5{margin-top:.125rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-1\.5{height:.375rem}.h-10{height:2.5rem}.h-2{height:.5rem}.h-4{height:1rem}.h-5{height:1.25rem}.max-h-56{max-height:14rem}.max-h-\[92vh\]{max-height:92vh}.min-h-full{min-height:100%}.min-h-screen{min-height:100vh}.w-1\.5{width:.375rem}.w-10{width:2.5rem}.w-2{width:.5rem}.w-4{width:1rem}.w-5{width:1.25rem}.w-fit{width:-moz-fit-content;width:fit-content}.w-full{width:100%}.min-w-0{min-width:0}.max-w-2xl{max-width:42rem}.max-w-4xl{max-width:56rem}.max-w-lg{max-width:32rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.cursor-pointer{cursor:pointer}.resize-y{resize:vertical}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-col-reverse{flex-direction:column-reverse}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-0\.5{gap:.125rem}.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-x-3{-moz-column-gap:.75rem;column-gap:.75rem}.gap-x-4{-moz-column-gap:1rem;column-gap:1rem}.gap-y-1{row-gap:.25rem}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.space-y-5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem*var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem*var(--tw-space-y-reverse))}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.whitespace-pre-wrap{white-space:pre-wrap}.break-words{overflow-wrap:break-word}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-t-xl{border-top-left-radius:.75rem;border-top-right-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-corning{--tw-border-opacity:1;border-color:rgb(0 86 150/var(--tw-border-opacity,1))}.border-corning\/20{border-color:rgba(0,86,150,.2)}.border-corning\/25{border-color:rgba(0,86,150,.25)}.border-corning\/30{border-color:rgba(0,86,150,.3)}.border-red-700\/40{border-color:rgba(185,28,28,.4)}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1))}.border-l-corning{--tw-border-opacity:1;border-left-color:rgb(0 86 150/var(--tw-border-opacity,1))}.border-l-red-700{--tw-border-opacity:1;border-left-color:rgb(185 28 28/var(--tw-border-opacity,1))}.bg-\[\#F8FAFC\]{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.bg-corning{--tw-bg-opacity:1;background-color:rgb(0 86 150/var(--tw-bg-opacity,1))}.bg-corning-dark{--tw-bg-opacity:1;background-color:rgb(0 68 122/var(--tw-bg-opacity,1))}.bg-corning-light{--tw-bg-opacity:1;background-color:rgb(232 241 248/var(--tw-bg-opacity,1))}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153/var(--tw-bg-opacity,1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.bg-slate-900\/50{background-color:rgba(15,23,42,.5)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.bg-white\/10{background-color:hsla(0,0%,100%,.1)}.p-0{padding:0}.p-1\.5{padding:.375rem}.p-3{padding:.75rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-7{padding-top:1.75rem;padding-bottom:1.75rem}.pt-5{padding-top:1.25rem}.pt-6{padding-top:1.5rem}.text-left{text-align:left}.font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.font-sans{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-light{font-weight:300}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-relaxed{line-height:1.625}.tracking-\[0\.25em\]{letter-spacing:.25em}.tracking-\[0\.2em\]{letter-spacing:.2em}.tracking-tight{letter-spacing:-.025em}.tracking-wide{letter-spacing:.025em}.tracking-wider{letter-spacing:.05em}.text-\[\#0F172A\]{--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1))}.text-\[\#64748B\]{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-corning{--tw-text-opacity:1;color:rgb(0 86 150/var(--tw-text-opacity,1))}.text-corning-dark{--tw-text-opacity:1;color:rgb(0 68 122/var(--tw-text-opacity,1))}.text-red-700{--tw-text-opacity:1;color:rgb(185 28 28/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59/var(--tw-text-opacity,1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.text-white\/70{color:hsla(0,0%,100%,.7)}.text-white\/80{color:hsla(0,0%,100%,.8)}.text-white\/90{color:hsla(0,0%,100%,.9)}.underline{text-decoration-line:underline}.underline-offset-4{text-underline-offset:4px}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-70{opacity:.7}.opacity-80{opacity:.8}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color)}.shadow-sm,.shadow-xl{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color)}.ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.ring-corning\/20{--tw-ring-color:rgba(0,86,150,.2)}.ring-corning\/30{--tw-ring-color:rgba(0,86,150,.3)}.ring-red-700\/40{--tw-ring-color:rgba(185,28,28,.4)}.ring-slate-200{--tw-ring-opacity:1;--tw-ring-color:rgb(226 232 240/var(--tw-ring-opacity,1))}.ring-white\/25{--tw-ring-color:hsla(0,0%,100%,.25)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1)}.duration-150,.transition{transition-duration:.15s}@keyframes parpadeo{0%,to{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.6)}50%{opacity:.35;box-shadow:0 0 0 4px rgba(52,211,153,0)}}.live-dot{animation:parpadeo 1.4s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.live-dot{animation:none}}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}.hover\:border-slate-300:hover{--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity,1))}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.hover\:text-corning-dark:hover{--tw-text-opacity:1;color:rgb(0 68 122/var(--tw-text-opacity,1))}.hover\:text-slate-800:hover{--tw-text-opacity:1;color:rgb(30 41 59/var(--tw-text-opacity,1))}.hover\:text-slate-900:hover{--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus-visible\:ring-2:focus-visible{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus-visible\:ring-corning\/40:focus-visible{--tw-ring-color:rgba(0,86,150,.4)}@media (min-width:640px){.sm\:col-span-1{grid-column:span 1/span 1}.sm\:col-span-2{grid-column:span 2/span 2}.sm\:mt-0{margin-top:0}.sm\:w-auto{width:auto}.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:justify-end{justify-content:flex-end}.sm\:justify-between{justify-content:space-between}.sm\:rounded-xl{border-radius:.75rem}.sm\:p-4{padding:1rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:py-8{padding-top:2rem;padding-bottom:2rem}.sm\:py-9{padding-top:2.25rem;padding-bottom:2.25rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:text-\[13px\]{font-size:13px}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-sm{font-size:.875rem;line-height:1.25rem}}
+  </style>
+</head>
+
+<body class="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 antialiased">
+
+  <!-- ENCABEZADO / CO-BRANDING -->
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
+      <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+        <span class="text-xl font-bold tracking-[0.25em] text-corning sm:text-2xl">CORNING</span>
+        <span class="text-xl font-light text-slate-300 sm:text-2xl" aria-hidden="true">|</span>
+        <span class="text-xs tracking-wide sm:text-sm">
+          <span class="font-medium text-[#64748B]">OPERADO POR </span><span class="font-bold text-[#0F172A]">RouteIQ SALUD</span>
+        </span>
+      </div>
+      <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-corning/20 bg-corning-light px-3 py-1 text-xs font-semibold text-corning">
+        <span class="h-1.5 w-1.5 rounded-full bg-corning" aria-hidden="true"></span>
+        Zona Protegida
+      </span>
+    </div>
+  </header>
+
+  <!-- BARRA DE ESTADO EN TIEMPO REAL -->
+  <div class="bg-corning-dark text-white">
+    <div class="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-2 sm:px-6">
+      <p class="flex min-w-0 items-center gap-2 text-xs font-medium sm:text-[13px]">
+        <span class="live-dot h-2 w-2 shrink-0 rounded-full bg-emerald-400" aria-hidden="true"></span>
+        <span class="truncate">Solicitud activa: <span id="reloj" class="tabular-nums text-white/90"></span></span>
+      </p>
+      <span id="sedeBadge" class="shrink-0 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold tracking-wider text-white/70 ring-1 ring-white/25">SIN PLANTA</span>
+    </div>
+  </div>
+
+  <section class="bg-corning text-white">
+    <div class="mx-auto max-w-4xl px-4 py-7 sm:px-6 sm:py-9">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Contrato corporativo</p>
+      <h1 class="mt-2 text-xl font-bold tracking-tight sm:text-2xl">PORTAL DE GESTIÓN MÉDICA INDUSTRIAL - ZONA PROTEGIDA</h1>
+      <p class="mt-2 max-w-2xl text-sm text-white/80 sm:text-base">Sistema de despacho inmediato y programación de traslados corporativos</p>
+    </div>
+  </section>
+
+  <main class="mx-auto max-w-4xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
+
+    <!-- Aviso de envío completado -->
+    <div id="successBanner" class="hidden rounded-lg border border-corning/30 bg-corning-light px-5 py-4" role="status">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm font-semibold text-corning">Solicitud generada</p>
+          <p class="mt-0.5 text-sm text-slate-700">Verifique que el mensaje haya sido enviado en WhatsApp. La coordinación STEN confirmará unidad y personal asignado.</p>
+          <p id="registroEstado" class="mt-1 hidden text-xs font-medium text-slate-500"></p>
+        </div>
+        <button type="button" id="btnNueva" class="btn btn-outline shrink-0">Iniciar nueva solicitud</button>
+      </div>
+    </div>
+
+    <!-- TABS DE SERVICIO -->
+    <div role="tablist" aria-label="Tipo de servicio" class="grid grid-cols-1 gap-1.5 rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm sm:grid-cols-3">
+      <button type="button" role="tab" data-tab="urgencia" class="flex flex-col items-start gap-0.5 rounded-md px-4 py-3 text-left transition duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-corning/40">
+        <span class="text-[11px] font-semibold uppercase tracking-wider opacity-80">Prioridad 1</span>
+        <span class="text-sm font-semibold">URGENCIA MÉDICA / ACCIDENTE</span>
+      </button>
+      <button type="button" role="tab" data-tab="traslado" class="flex flex-col items-start gap-0.5 rounded-md px-4 py-3 text-left transition duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-corning/40">
+        <span class="text-[11px] font-semibold uppercase tracking-wider opacity-80">Hoy / Programado</span>
+        <span class="text-sm font-semibold">TRASLADO MÉDICO</span>
+      </button>
+      <button type="button" role="tab" data-tab="evento" class="flex flex-col items-start gap-0.5 rounded-md px-4 py-3 text-left transition duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-corning/40">
+        <span class="text-[11px] font-semibold uppercase tracking-wider opacity-80">Cobertura preventiva</span>
+        <span class="text-sm font-semibold">COBERTURA DE EVENTO / SIMULACRO</span>
+      </button>
+    </div>
+
+    <form id="form" novalidate class="space-y-6">
+
+      <!-- PLANTA / SEDE -->
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Planta Corning</h2>
+            <p class="card-desc">Sede donde se requiere el servicio.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="sedeLocked" class="hidden items-center gap-3 rounded-md border border-corning/25 bg-corning-light px-4 py-3">
+            <svg class="h-5 w-5 shrink-0 text-corning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            <p class="text-sm font-semibold text-corning" id="sedeLockedText"></p>
+          </div>
+
+          <div id="sedeSelectWrap">
+            <span class="label req" id="sedeLbl">Seleccione la planta</span>
+            <div id="sedeGrid" class="grid grid-cols-2 gap-2 sm:grid-cols-4" role="radiogroup" aria-labelledby="sedeLbl">
+              <!-- generado por JS -->
+            </div>
+            <p class="err" id="err-sede"></p>
+            <p class="hint hidden" id="sedeParamWarn">El código de planta recibido en el enlace no es válido. Seleccione la planta manualmente.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DETALLE DEL SERVICIO (traslado / evento) -->
+      <section class="card" id="detCard">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title" id="detTitle">Detalle del servicio</h2>
+            <p class="card-desc" id="detDesc"></p>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Traslado -->
+          <div data-panel="traslado" class="hidden space-y-5">
+            <div>
+              <span class="label">Modalidad del traslado</span>
+              <div class="seg-wrap" role="group" aria-label="Modalidad del traslado">
+                <button type="button" class="seg" data-group="traslado" data-value="hoy">Hoy (inmediato)</button>
+                <button type="button" class="seg" data-group="traslado" data-value="programado">Programado</button>
+              </div>
+            </div>
+            <div id="trasladoProg" class="hidden grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="tFecha" class="label req">Fecha del traslado</label>
+                <input type="date" id="tFecha" class="input">
+                <p class="err" id="err-tFecha"></p>
+              </div>
+              <div>
+                <label for="tHora" class="label req">Hora de salida</label>
+                <input type="time" id="tHora" class="input">
+                <p class="err" id="err-tHora"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evento -->
+          <div data-panel="evento" class="hidden space-y-5">
+            <div>
+              <span class="label">Tipo de cobertura</span>
+              <div class="seg-wrap" role="group" aria-label="Tipo de cobertura">
+                <button type="button" class="seg" data-group="eventoTipo" data-value="EVENTO">Evento</button>
+                <button type="button" class="seg" data-group="eventoTipo" data-value="SIMULACRO">Simulacro</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label for="eFecha" class="label req">Fecha</label>
+                <input type="date" id="eFecha" class="input">
+                <p class="err" id="err-eFecha"></p>
+              </div>
+              <div>
+                <label for="eHora" class="label req">Hora de inicio</label>
+                <input type="time" id="eHora" class="input">
+                <p class="err" id="err-eHora"></p>
+              </div>
+              <div>
+                <label for="eHoras" class="label req">Horas de cobertura</label>
+                <input type="number" id="eHoras" class="input" min="1" max="72" step="1" inputmode="numeric" placeholder="Ej. 4">
+                <p class="err" id="err-eHoras"></p>
+              </div>
+            </div>
+            <div>
+              <label for="eResp" class="label req">Responsables del evento</label>
+              <input type="text" id="eResp" class="input" placeholder="Nombre y cargo de los responsables en sitio" autocomplete="off">
+              <p class="err" id="err-eResp"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- UBICACIÓN -->
+      <section class="card">
+        <div class="card-head">
+          <div class="flex items-start gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-corning-light text-corning ring-1 ring-corning/20" aria-hidden="true">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            <div>
+              <h2 class="card-title">Ubicación del servicio</h2>
+              <p class="card-desc">Coordenadas del punto exacto y referencia dentro de la planta.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-body space-y-5">
+          <div class="space-y-3">
+            <button type="button" id="btnGps" class="btn btn-primary w-full sm:w-auto">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              Obtener coordenadas GPS de este punto
+            </button>
+            <div id="gpsStatus" class="text-sm text-slate-500" aria-live="polite">Coordenadas no capturadas.</div>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <a id="gpsLink" href="#" target="_blank" rel="noopener" class="hidden text-sm font-medium text-corning underline underline-offset-4 hover:text-corning-dark">Verificar punto en Google Maps</a>
+              <button type="button" id="btnManual" class="text-sm font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900">Escribir ubicación manualmente</button>
+            </div>
+          </div>
+
+          <div id="manualWrap" class="hidden">
+            <label for="ubicManual" class="label">Dirección o coordenadas (captura manual)</label>
+            <input type="text" id="ubicManual" class="input" placeholder="Ej. Av. Industrial 123, Parque Industrial, o 26.0807, -98.2883" autocomplete="off">
+            <p class="hint">Se usará en lugar de las coordenadas GPS si no fue posible obtenerlas.</p>
+          </div>
+
+          <div>
+            <label for="ubicInterna" class="label">Ubicación interna del paciente en planta *</label>
+            <input type="text" id="ubicInterna" class="input" placeholder="Ej. Paciente en Nave 2, Puerta 14, Estación de ensamble 5, etc." autocomplete="off">
+            <p class="err" id="err-ubicInterna"></p>
+          </div>
+
+          <div data-hide-evento>
+            <label for="tDestino" class="label">Destino del traslado (Hacia dónde se dirige) <span id="destinoReq">*</span></label>
+            <input type="text" id="tDestino" class="input" placeholder="Ej. Hospital Santander, Clínica IMSS, domicilio particular..." autocomplete="off">
+            <p class="hint" id="destinoHint">En urgencias, si aún no se define, déjelo en blanco y lo determinará el equipo de paramédicos.</p>
+            <p class="err" id="err-tDestino"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PACIENTE -->
+      <section class="card" data-hide-evento>
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Datos del paciente</h2>
+            <p class="card-desc">Información clínica básica para preparar la atención.</p>
+          </div>
+        </div>
+        <div class="card-body space-y-5">
+          <div>
+            <label for="pNombre" class="label req">Nombre completo del paciente</label>
+            <input type="text" id="pNombre" class="input" placeholder="Nombre y apellidos (si se desconoce, escriba: Desconocido)" autocomplete="off">
+            <p class="err" id="err-pNombre"></p>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="pEdad" class="label">Edad (Años)</label>
+              <input type="number" id="pEdad" class="input" min="0" max="120" step="1" inputmode="numeric" placeholder="Ej. 42">
+            </div>
+            <div>
+              <label for="pPeso" class="label">Peso aprox. (kg)</label>
+              <input type="number" id="pPeso" class="input" min="1" max="350" step="1" inputmode="numeric" placeholder="Ej. 75">
+            </div>
+          </div>
+          <div>
+            <label for="pMotivo" class="label req">Diagnóstico / Motivo de atención</label>
+            <textarea id="pMotivo" rows="3" class="input resize-y" placeholder="Describa lo ocurrido y el estado actual del paciente"></textarea>
+            <p class="err" id="err-pMotivo"></p>
+          </div>
+          <div>
+            <span class="label req">Estado de conciencia</span>
+            <div class="seg-wrap" role="group" aria-label="Estado de conciencia">
+              <button type="button" class="seg" data-group="conciencia" data-value="CONSCIENTE">Consciente</button>
+              <button type="button" class="seg" data-group="conciencia" data-value="INCONSCIENTE">Inconsciente</button>
+            </div>
+            <p class="err" id="err-conciencia"></p>
+            <div id="inconscienteAlert" class="mt-3 hidden rounded-md border border-red-700/40 border-l-4 border-l-red-700 bg-white px-4 py-3">
+              <p class="text-sm font-semibold text-red-700">PACIENTE INCONSCIENTE</p>
+              <p class="mt-1 text-sm text-slate-700">Notifique de inmediato a cabina por vía telefónica y a la brigada interna. Verifique respiración y mantenga vigilancia constante hasta la llegada de la unidad.</p>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-200 pt-5">
+            <span class="label">Padece enfermedades crónicas</span>
+            <div class="seg-wrap" role="group" aria-label="Padece enfermedades crónicas">
+              <button type="button" class="seg" data-group="cronicas" data-value="no">No</button>
+              <button type="button" class="seg" data-group="cronicas" data-value="si">Sí</button>
+            </div>
+            <div id="cronicasWrap" class="mt-4 hidden">
+              <div class="flex flex-wrap gap-2">
+                <label class="pill"><input type="checkbox" class="sr-only" name="cronica" value="Diabetes">Diabetes</label>
+                <label class="pill"><input type="checkbox" class="sr-only" name="cronica" value="HTA">HTA</label>
+                <label class="pill"><input type="checkbox" class="sr-only" name="cronica" value="EPOC">EPOC</label>
+                <label class="pill"><input type="checkbox" class="sr-only" name="cronica" value="Cardiopatia">Cardiopatía</label>
+                <label class="pill"><input type="checkbox" class="sr-only" name="cronica" value="Renal">Renal</label>
+                <label class="pill"><input type="checkbox" class="sr-only" name="cronica" value="Oncologico">Oncológico</label>
+                <label class="pill"><input type="checkbox" class="sr-only" name="cronica" value="Otro" id="cronOtroChk">Otro</label>
+              </div>
+              <div id="cronOtroWrap" class="mt-3 hidden">
+                <input type="text" id="cronOtro" class="input" placeholder="Especifique la enfermedad" autocomplete="off">
+              </div>
+              <p class="err" id="err-cronicas"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EQUIPO O SOPORTE REQUERIDO -->
+      <section class="card" data-hide-evento>
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">EQUIPO O SOPORTE REQUERIDO</h2>
+            <p class="card-desc">Permite asignar la unidad con el equipamiento adecuado.</p>
+          </div>
+        </div>
+        <div class="card-body space-y-4">
+          <div>
+            <span class="label">¿Requiere equipo o soporte especial? *</span>
+            <div class="seg-wrap" role="group" aria-label="Requiere equipo o soporte especial">
+              <button type="button" class="seg" data-group="equipo" data-value="no">No</button>
+              <button type="button" class="seg" data-group="equipo" data-value="si">Sí — Requiere equipo</button>
+            </div>
+            <p class="err" id="err-equipo"></p>
+          </div>
+          <div id="equipoWrap" class="hidden">
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="Oxigeno"><span>Oxígeno</span></label>
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="Ventilador"><span>Ventilador</span></label>
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="Monitor de signos vitales"><span>Monitor de Signos Vitales</span></label>
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="Desfibrilador"><span>Desfibrilador</span></label>
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="CPAP"><span>CPAP</span></label>
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="Incubadora neonatal"><span>Incubadora Neonatal</span></label>
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="Bombas de infusion"><span>Bombas de Infusión</span></label>
+              <label class="check-row"><input type="checkbox" class="check" name="equipo" value="Otro" id="equipoOtroChk"><span>Medicamentos en infusión / Otro equipo especial</span></label>
+            </div>
+            <div id="equipoOtroWrap" class="mt-3 hidden">
+              <input type="text" id="equipoOtro" class="input" placeholder="Especifique medicamento o equipo" autocomplete="off">
+            </div>
+            <p class="err" id="err-equipoLista"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SIGNOS VITALES -->
+      <section class="card" data-hide-evento>
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Signos vitales</h2>
+            <p class="card-desc">Registro opcional tomado en el lugar.</p>
+          </div>
+        </div>
+        <div class="card-body space-y-5">
+          <div>
+            <span class="label">¿Cuenta con registro de signos vitales en el lugar?</span>
+            <div class="seg-wrap" role="group" aria-label="Registro de signos vitales">
+              <button type="button" class="seg" data-group="signos" data-value="no">No</button>
+              <button type="button" class="seg" data-group="signos" data-value="si">Sí</button>
+            </div>
+          </div>
+
+          <div class="rounded-md border border-slate-200 bg-slate-50 px-4 py-3">
+            <p class="text-sm leading-relaxed text-slate-700">Compartir los signos vitales permite a nuestro equipo de paramédicos preparar el soporte avanzado adecuado y optimizar la atención a la llegada de la unidad. Si no cuenta con el equipo en este momento, seleccione 'No' y continúe.</p>
+          </div>
+
+          <div id="signosGrid" class="hidden">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="col-span-2 sm:col-span-1">
+                <span class="label">Tensión Arterial (mmHg)</span>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="vSis" class="input" inputmode="numeric" min="40" max="300" placeholder="Sistólica" aria-label="Tensión arterial sistólica">
+                  <span class="text-slate-400">/</span>
+                  <input type="number" id="vDia" class="input" inputmode="numeric" min="20" max="200" placeholder="Diastólica" aria-label="Tensión arterial diastólica">
+                </div>
+              </div>
+              <div class="col-span-2 sm:col-span-1">
+                <label for="vFc" class="label">Frecuencia Cardíaca (LPM)</label>
+                <input type="number" id="vFc" class="input" inputmode="numeric" min="20" max="250" placeholder="Ej. 80">
+              </div>
+              <div>
+                <label for="vFr" class="label">Frecuencia Respiratoria (RPM)</label>
+                <input type="number" id="vFr" class="input" inputmode="numeric" min="4" max="70" placeholder="Ej. 16">
+              </div>
+              <div>
+                <label for="vSpo2" class="label">SpO2 (%)</label>
+                <input type="number" id="vSpo2" class="input" inputmode="numeric" min="50" max="100" placeholder="Ej. 97">
+              </div>
+              <div>
+                <label for="vGlu" class="label">Glucemia / DXT (mg/dL)</label>
+                <input type="number" id="vGlu" class="input" inputmode="numeric" min="10" max="900" placeholder="Ej. 110">
+              </div>
+              <div>
+                <label for="vTemp" class="label">Temperatura (°C)</label>
+                <input type="number" id="vTemp" class="input" inputmode="decimal" min="30" max="45" step="0.1" placeholder="Ej. 36.5">
+              </div>
+            </div>
+            <p class="err" id="err-signos"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SOLICITANTE -->
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Datos de quien solicita</h2>
+            <p class="card-desc">Contacto directo para confirmación del despacho.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label for="sNombre" class="label req">Nombre completo de quien reporta</label>
+              <input type="text" id="sNombre" class="input" placeholder="Nombre y apellidos" autocomplete="name">
+              <p class="err" id="err-sNombre"></p>
+            </div>
+            <div>
+              <label for="sDepto" class="label req">Departamento</label>
+              <select id="sDepto" class="input">
+                <option value="">Seleccionar departamento...</option>
+                <option>Seguridad Patrimonial</option>
+                <option>Enfermería</option>
+                <option>Supervisor</option>
+                <option>Otro</option>
+              </select>
+              <p class="err" id="err-sDepto"></p>
+              <div id="deptoOtroWrap" class="mt-3 hidden">
+                <label for="sDeptoOtro" class="label">Especifique departamento *</label>
+                <input type="text" id="sDeptoOtro" class="input" placeholder="Ej. Recursos Humanos, Mantenimiento, Calidad..." autocomplete="off">
+                <p class="err" id="err-sDeptoOtro"></p>
+              </div>
+            </div>
+            <div>
+              <label for="sTel" class="label req">Teléfono de contacto directo / Extensión</label>
+              <input type="tel" id="sTel" class="input" inputmode="tel" placeholder="Ej. 899 123 4567 / Ext. 2045" autocomplete="tel">
+              <p class="err" id="err-sTel"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PÓLIZA -->
+      <section class="card overflow-hidden">
+        <div class="flex items-stretch">
+          <div class="w-1.5 shrink-0 bg-corning" aria-hidden="true"></div>
+          <div class="flex flex-1 flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Régimen de facturación</p>
+              <p class="mt-1 text-sm font-semibold text-slate-900">MODALIDAD: Zona Protegida Corning - Facturación directa a póliza corporativa</p>
+            </div>
+            <span class="mt-2 inline-flex w-fit items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 sm:mt-0">No editable</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ENVÍO -->
+      <div class="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-xs text-slate-500">Los campos marcados con * son obligatorios.</p>
+        <button type="submit" id="btnSubmit" class="btn btn-primary w-full px-6 py-3 text-base sm:w-auto">Generar Solicitud</button>
+      </div>
+    </form>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-4xl flex-col gap-1 px-4 py-5 text-xs text-slate-500 sm:flex-row sm:justify-between sm:px-6">
+      <p>Operado por RouteIQ SALUD - Ambulancias STEN</p>
+      <p>Uso exclusivo de personal autorizado Corning - Zona Protegida</p>
+    </div>
+  </footer>
+
+  <!-- MODAL DE CONFIRMACIÓN -->
+  <div id="modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="absolute inset-0 bg-slate-900/50" data-close></div>
+    <div class="relative flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
+      <div class="relative flex max-h-[92vh] w-full max-w-lg flex-col rounded-t-xl border border-slate-200 bg-white shadow-xl sm:rounded-xl">
+        <div class="border-b border-slate-200 px-5 py-4 sm:px-6">
+          <h3 id="modalTitle" class="text-base font-semibold text-slate-900">Confirmación de despacho</h3>
+          <p class="mt-0.5 text-sm text-slate-500">Revise la solicitud antes de enviarla.</p>
+        </div>
+
+        <div class="flex-1 space-y-4 overflow-y-auto px-5 py-5 sm:px-6">
+          <div id="avisoBox" class="rounded-md border-l-4 px-4 py-3">
+            <p class="text-sm font-semibold" id="avisoTitle">AVISO DE DESPACHO</p>
+            <p class="mt-1 text-sm text-slate-700">En caso de emergencias críticas, la notificación digital no sustituye la llamada a cabina. Confirme que la brigada o servicio médico está en conocimiento.</p>
+          </div>
+
+          <div>
+            <div class="mb-1.5 flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Vista previa del mensaje</span>
+              <button type="button" id="btnCopiar" class="text-xs font-medium text-corning hover:text-corning-dark">Copiar texto</button>
+            </div>
+            <pre id="preview" class="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-md border border-slate-200 bg-slate-50 p-3 font-mono text-[11px] leading-relaxed text-slate-700"></pre>
+          </div>
+
+          <label class="flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 px-4 py-3 transition hover:bg-slate-50">
+            <input type="checkbox" id="chkConfirm" class="check mt-0.5">
+            <span class="text-sm font-medium text-slate-800">Confirmo que los datos proporcionados son fidedignos y la unidad debe ser despachada</span>
+          </label>
+        </div>
+
+        <div class="flex flex-col-reverse gap-2 border-t border-slate-200 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+          <button type="button" class="btn btn-outline" data-close>Regresar y corregir</button>
+          <button type="button" id="btnEnviar" class="btn btn-primary" disabled>Enviar por WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ================= CONFIGURACIÓN =================
+       1) Número de cabina STEN (opcional). Formato internacional sin "+" ni espacios.
+          Ejemplo: '528991234567'. Vacío = WhatsApp pide elegir el contacto.            */
+    var WHATSAPP_NUMERO = '';
+
+    /* 2) Firebase (Firestore). Pegue aquí la configuración de su proyecto
+          (Consola Firebase > Configuración del proyecto > Tus apps > Configuración).
+          Si se deja vacía, el portal funciona igual y solo omite el guardado.          */
+    var firebaseConfig = {
+      apiKey: '',
+      authDomain: '',
+      projectId: '',
+      storageBucket: '',
+      messagingSenderId: '',
+      appId: ''
+    };
+    var FIREBASE_COLECCION = 'solicitudes_corning';
+    var FIREBASE_VERSION = '10.14.1';
+    /* ================================================= */
+
+    var SEDES = ['RY1', 'RAM', 'RCS', 'RWD', 'RCP', 'WEST', 'SCIENCE'];
+    var LINEA = '========================================';
+    var DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    var state = {
+      modulo: 'urgencia',
+      traslado: 'hoy',
+      eventoTipo: 'EVENTO',
+      conciencia: '',
+      cronicas: 'no',
+      equipo: '',
+      signos: 'no',
+      sede: '',
+      sedeFija: false,
+      gps: null,
+      mensaje: '',
+      registro: null
+    };
+
+    var $ = function (id) { return document.getElementById(id); };
+    var val = function (id) { return ($(id).value || '').trim(); };
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    /* ---------- RELOJ EN TIEMPO REAL ---------- */
+    function relojTexto(d) {
+      var h = d.getHours();
+      return DIAS[d.getDay()] + ', ' + pad(d.getDate()) + ' de ' + MESES[d.getMonth()] + ' ' +
+        pad(h % 12 || 12) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + ' ' + (h < 12 ? 'am' : 'pm');
+    }
+    function tick() { $('reloj').textContent = relojTexto(new Date()); }
+    tick();
+    setInterval(tick, 1000);
+
+    /* ---------- SEDES ---------- */
+    var SEDE_ON  = ['border-corning', 'bg-corning-light', 'text-corning', 'ring-1', 'ring-corning/30'];
+    var SEDE_OFF = ['border-slate-200', 'bg-white', 'text-slate-700', 'hover:border-slate-300', 'hover:bg-slate-50'];
+
+    (function construirSedes() {
+      var html = SEDES.map(function (s) {
+        return '<button type="button" role="radio" aria-checked="false" data-sede="' + s + '" class="sede-btn">' +
+          '<span class="block text-[10px] font-semibold uppercase tracking-wider opacity-70">Corning</span>' +
+          '<span class="block text-base font-bold tracking-wide">' + s + '</span></button>';
+      }).join('');
+      $('sedeGrid').innerHTML = html;
+      document.querySelectorAll('[data-sede]').forEach(function (b) {
+        b.addEventListener('click', function () { setSede(b.getAttribute('data-sede')); });
+      });
+      setSede('');
+    })();
+
+    function setSede(code) {
+      state.sede = code;
+      document.querySelectorAll('[data-sede]').forEach(function (b) {
+        var on = b.getAttribute('data-sede') === code;
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+        b.classList.remove.apply(b.classList, SEDE_ON.concat(SEDE_OFF));
+        b.classList.add.apply(b.classList, on ? SEDE_ON : SEDE_OFF);
+      });
+      var badge = $('sedeBadge');
+      badge.textContent = code || 'SIN PLANTA';
+      badge.classList.toggle('bg-white', !!code);
+      badge.classList.toggle('text-corning-dark', !!code);
+      badge.classList.toggle('bg-white/10', !code);
+      badge.classList.toggle('text-white/70', !code);
+      if (code) setErr('sede', '');
+    }
+
+    (function sedeDesdeURL() {
+      var raw = new URLSearchParams(window.location.search).get('unidad');
+      if (raw === null) return;
+      var code = raw.trim().toUpperCase().replace(/^CORNING[\s_-]*/, '');
+      if (SEDES.indexOf(code) !== -1) {
+        state.sedeFija = true;
+        setSede(code);
+        $('sedeSelectWrap').classList.add('hidden');
+        $('sedeLocked').classList.remove('hidden');
+        $('sedeLocked').classList.add('flex');
+        $('sedeLockedText').textContent = 'Planta fijada por QR de acceso: CORNING ' + code;
+      } else if (raw.trim() !== '') {
+        $('sedeParamWarn').classList.remove('hidden');
+      }
+    })();
+
+    /* ---------- TABS ---------- */
+    var TAB_ON_RED  = ['bg-white', 'text-red-700', 'ring-1', 'ring-red-700/40', 'shadow-sm'];
+    var TAB_ON_BLUE = ['bg-corning-light', 'text-corning', 'ring-1', 'ring-corning/30', 'shadow-sm'];
+    var TAB_OFF     = ['text-slate-600', 'hover:bg-slate-50', 'hover:text-slate-900'];
+    var TAB_ALL     = TAB_ON_RED.concat(TAB_ON_BLUE, TAB_OFF);
+
+    var DETALLE = {
+      traslado: ['Traslado médico', 'Traslado inmediato o programado con fecha y hora.'],
+      evento:   ['Cobertura de evento / simulacro', 'Ambulancia y personal en sitio por horas definidas.']
+    };
+
+    function setModulo(m) {
+      state.modulo = m;
+      document.querySelectorAll('[data-tab]').forEach(function (b) {
+        var on = b.getAttribute('data-tab') === m;
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        b.classList.remove.apply(b.classList, TAB_ALL);
+        b.classList.add.apply(b.classList, on ? (m === 'urgencia' ? TAB_ON_RED : TAB_ON_BLUE) : TAB_OFF);
+      });
+      document.querySelectorAll('[data-panel]').forEach(function (p) {
+        p.classList.toggle('hidden', p.getAttribute('data-panel') !== m);
+      });
+      document.querySelectorAll('[data-hide-evento]').forEach(function (s) {
+        s.classList.toggle('hidden', m === 'evento');
+      });
+      $('detCard').classList.toggle('hidden', m === 'urgencia');
+      if (DETALLE[m]) { $('detTitle').textContent = DETALLE[m][0]; $('detDesc').textContent = DETALLE[m][1]; }
+      $('destinoReq').classList.toggle('hidden', m !== 'traslado');
+      $('destinoHint').classList.toggle('hidden', m !== 'urgencia');
+      var btn = $('btnSubmit');
+      btn.classList.toggle('btn-danger', m === 'urgencia');
+      btn.classList.toggle('btn-primary', m !== 'urgencia');
+      limpiarErrores();
+    }
+
+    document.querySelectorAll('[data-tab]').forEach(function (b) {
+      b.addEventListener('click', function () { setModulo(b.getAttribute('data-tab')); });
+    });
+
+    /* ---------- CONTROLES SEGMENTADOS ---------- */
+    var SEG_ON     = ['bg-white', 'text-slate-900', 'shadow-sm', 'ring-1', 'ring-slate-200'];
+    var SEG_ON_RED = ['bg-white', 'text-red-700', 'shadow-sm', 'ring-1', 'ring-red-700/40'];
+    var SEG_OFF    = ['text-slate-500', 'hover:text-slate-800'];
+    var SEG_ALL    = SEG_ON.concat(SEG_ON_RED, SEG_OFF);
+
+    function setSeg(group, value) {
+      state[group] = value;
+      document.querySelectorAll('.seg[data-group="' + group + '"]').forEach(function (b) {
+        var on = b.getAttribute('data-value') === value;
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.classList.remove.apply(b.classList, SEG_ALL);
+        var red = on && group === 'conciencia' && value === 'INCONSCIENTE';
+        b.classList.add.apply(b.classList, on ? (red ? SEG_ON_RED : SEG_ON) : SEG_OFF);
+      });
+      if (group === 'traslado') $('trasladoProg').classList.toggle('hidden', value !== 'programado');
+      if (group === 'signos') { $('signosGrid').classList.toggle('hidden', value !== 'si'); setErr('signos', ''); }
+      if (group === 'cronicas') { $('cronicasWrap').classList.toggle('hidden', value !== 'si'); setErr('cronicas', ''); }
+      if (group === 'equipo') { $('equipoWrap').classList.toggle('hidden', value !== 'si'); setErr('equipo', ''); setErr('equipoLista', ''); }
+      if (group === 'conciencia') {
+        $('inconscienteAlert').classList.toggle('hidden', value !== 'INCONSCIENTE');
+        setErr('conciencia', '');
+      }
+    }
+
+    document.querySelectorAll('.seg').forEach(function (b) {
+      b.addEventListener('click', function () { setSeg(b.getAttribute('data-group'), b.getAttribute('data-value')); });
+    });
+
+    $('cronOtroChk').addEventListener('change', function () { $('cronOtroWrap').classList.toggle('hidden', !this.checked); });
+    $('equipoOtroChk').addEventListener('change', function () { $('equipoOtroWrap').classList.toggle('hidden', !this.checked); });
+    document.querySelectorAll('input[name=cronica]').forEach(function (c) { c.addEventListener('change', function () { setErr('cronicas', ''); }); });
+    document.querySelectorAll('input[name=equipo]').forEach(function (c) { c.addEventListener('change', function () { setErr('equipoLista', ''); }); });
+
+    /* Departamento: campo adicional cuando se elige "Otro" */
+    $('sDepto').addEventListener('change', function () {
+      var otro = this.value === 'Otro';
+      $('deptoOtroWrap').classList.toggle('hidden', !otro);
+      if (otro) $('sDeptoOtro').focus();
+      else { $('sDeptoOtro').value = ''; setErr('sDeptoOtro', ''); }
+    });
+
+    function departamento() {
+      return val('sDepto') === 'Otro' ? val('sDeptoOtro') : val('sDepto');
+    }
+
+    function marcados(name) {
+      return Array.prototype.slice.call(document.querySelectorAll('input[name=' + name + ']:checked')).map(function (c) { return c.value; });
+    }
+
+    /* ---------- FECHAS MÍNIMAS ---------- */
+    (function () {
+      var d = new Date();
+      var hoy = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+      $('tFecha').min = hoy;
+      $('eFecha').min = hoy;
+    })();
+
+    /* ---------- GEOLOCALIZACIÓN ---------- */
+    function setGpsStatus(tipo, texto) {
+      $('gpsStatus').className = 'text-sm ' + ({
+        loading: 'text-slate-600',
+        ok: 'font-semibold text-corning',
+        aviso: 'font-medium text-slate-700'
+      })[tipo];
+      $('gpsStatus').textContent = texto;
+    }
+
+    function mostrarManual(enfocar) {
+      $('manualWrap').classList.remove('hidden');
+      $('btnManual').classList.add('hidden');
+      if (enfocar) $('ubicManual').focus();
+    }
+
+    $('btnManual').addEventListener('click', function () { mostrarManual(true); });
+
+    $('btnGps').addEventListener('click', function () {
+      if (!('geolocation' in navigator)) {
+        setGpsStatus('aviso', 'Este dispositivo no permite obtener la ubicación. Puede escribirla manualmente; la solicitud se envía igual.');
+        mostrarManual(false);
+        return;
+      }
+      if (!window.isSecureContext) {
+        setGpsStatus('aviso', 'La ubicación automática solo funciona con conexión segura (https). Escriba la ubicación manualmente y continúe.');
+        mostrarManual(false);
+        return;
+      }
+      var btn = $('btnGps');
+      btn.disabled = true;
+      setGpsStatus('loading', 'Obteniendo coordenadas...');
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        var lat = pos.coords.latitude.toFixed(6);
+        var lng = pos.coords.longitude.toFixed(6);
+        var acc = Math.round(pos.coords.accuracy);
+        state.gps = { lat: +lat, lng: +lng, precision_m: acc, url: 'https://www.google.com/maps?q=' + lat + ',' + lng };
+        setGpsStatus('ok', 'Coordenadas fijadas: [' + lat + ', ' + lng + ']' + (acc ? '  (precisión aprox. ' + acc + ' m)' : ''));
+        $('gpsLink').href = state.gps.url;
+        $('gpsLink').classList.remove('hidden');
+        btn.disabled = false;
+      }, function (err) {
+        var msg = {
+          1: 'No se otorgó permiso de ubicación. No hay problema: escriba la ubicación manualmente y continúe con la solicitud.',
+          2: 'No fue posible determinar la ubicación en este punto. Escriba la ubicación manualmente y continúe.',
+          3: 'La ubicación tardó demasiado en responder. Puede intentar de nuevo o escribirla manualmente.'
+        }[err.code] || 'No fue posible obtener la ubicación. Escríbala manualmente y continúe.';
+        setGpsStatus('aviso', msg);
+        mostrarManual(false);
+        btn.disabled = false;
+      }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+    });
+
+    /* ---------- VALIDACIÓN ---------- */
+    function setErr(id, msg) {
+      var e = $('err-' + id), f = $(id);
+      if (e) { e.textContent = msg; e.classList.toggle('hidden', !msg); }
+      if (f && f.classList && f.classList.contains('input')) f.classList.toggle('input-error', !!msg);
+    }
+
+    function limpiarErrores() {
+      document.querySelectorAll('.err').forEach(function (e) { e.textContent = ''; e.classList.add('hidden'); });
+      document.querySelectorAll('.input-error').forEach(function (f) { f.classList.remove('input-error'); });
+    }
+
+    document.querySelectorAll('.input').forEach(function (f) {
+      f.addEventListener('input', function () { if (f.id) setErr(f.id, ''); });
+      f.addEventListener('change', function () { if (f.id) setErr(f.id, ''); });
+    });
+
+    function validar() {
+      limpiarErrores();
+      var errores = [];
+      function req(id, msg) { if (!val(id)) { setErr(id, msg); errores.push(id); } }
+      function err(id, msg) { setErr(id, msg); errores.push(id); }
+
+      if (!state.sede) err('sede', 'Seleccione la planta Corning.');
+
+      if (state.modulo === 'traslado' && state.traslado === 'programado') {
+        req('tFecha', 'Indique la fecha.');
+        req('tHora', 'Indique la hora.');
+        if (val('tFecha') && val('tHora') && fechaDe(val('tFecha'), val('tHora')) < new Date(Date.now() - 5 * 60000)) {
+          err('tHora', 'La fecha y hora programadas ya pasaron.');
+        }
+      }
+
+      if (state.modulo === 'evento') {
+        req('eFecha', 'Indique la fecha.');
+        req('eHora', 'Indique la hora de inicio.');
+        var h = parseFloat(val('eHoras'));
+        if (!val('eHoras') || isNaN(h) || h <= 0) err('eHoras', 'Indique las horas de cobertura.');
+        req('eResp', 'Indique los responsables.');
+      }
+
+      req('ubicInterna', 'La ubicación interna del paciente es obligatoria.');
+      if (state.modulo === 'traslado') req('tDestino', 'Indique hacia dónde se dirige el traslado.');
+
+      if (state.modulo !== 'evento') {
+        req('pNombre', 'Indique el nombre del paciente (o escriba "Desconocido").');
+        req('pMotivo', 'Describa el diagnóstico o motivo de atención.');
+        if (!state.conciencia) err('conciencia', 'Seleccione el estado de conciencia.');
+        if (state.cronicas === 'si') {
+          var cr = marcados('cronica');
+          if (!cr.length) err('cronicas', 'Seleccione al menos una enfermedad o elija "No".');
+          else if (cr.indexOf('Otro') !== -1 && !val('cronOtro')) err('cronicas', 'Especifique la enfermedad marcada como "Otro".');
+        }
+        if (!state.equipo) err('equipo', 'Indique si requiere equipo o soporte especial.');
+        else if (state.equipo === 'si') {
+          var eq = marcados('equipo');
+          if (!eq.length) err('equipoLista', 'Seleccione al menos un equipo o elija "No".');
+          else if (eq.indexOf('Otro') !== -1 && !val('equipoOtro')) err('equipoLista', 'Especifique el medicamento o equipo especial.');
+        }
+        if (state.signos === 'si') {
+          var algun = ['vSis', 'vDia', 'vFc', 'vFr', 'vSpo2', 'vGlu', 'vTemp'].some(function (id) { return val(id) !== ''; });
+          if (!algun) err('signos', 'Capture al menos un signo vital o seleccione "No".');
+        }
+      }
+
+      req('sNombre', 'Indique su nombre completo.');
+      req('sDepto', 'Seleccione su departamento.');
+      if (val('sDepto') === 'Otro') req('sDeptoOtro', 'Especifique el departamento.');
+      req('sTel', 'Indique un teléfono o extensión de contacto.');
+
+      if (errores.length) {
+        var id = errores[0];
+        var destino = (id === 'sede') ? $('sedeGrid') : ($(id) && $(id).offsetParent ? $(id) : $('err-' + id));
+        if (destino) {
+          destino.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (destino.classList && destino.classList.contains('input')) setTimeout(function () { destino.focus({ preventScroll: true }); }, 350);
+        }
+        return false;
+      }
+      return true;
+    }
+
+    /* ---------- FORMATO ---------- */
+    function fechaDe(f, h) { var p = f.split('-'), t = h.split(':'); return new Date(+p[0], +p[1] - 1, +p[2], +t[0], +t[1]); }
+    function fmtFecha(d) { return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); }
+    function fmtHM(d) { return fmtFecha(d) + ' - ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' hrs'; }
+    function fmtExacta(d) { return fmtFecha(d) + ' - ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + ' hrs'; }
+    function num(id) { var x = val(id); return x === '' ? null : Number(x); }
+    function nr(x, u) { return x === null || x === '' ? 'N/R' : x + (u ? ' ' + u : ''); }
+
+    function listaConOtro(name, otroId) {
+      return marcados(name).map(function (v) { return v === 'Otro' ? 'Otro: ' + val(otroId) : v; });
+    }
+
+    /* Construye el registro completo (base de datos) y el mensaje (WhatsApp) */
+    function construir() {
+      var ahora = new Date();
+      var m = state.modulo;
+      var clinico = m !== 'evento';
+      var prog = m === 'traslado' && state.traslado === 'programado';
+
+      var tipo = m === 'urgencia' ? 'URGENCIA MEDICA / ACCIDENTE - PRIORIDAD 1'
+               : m === 'traslado' ? 'TRASLADO MEDICO - ' + (prog ? 'PROGRAMADO' : 'INMEDIATO (HOY)')
+               : 'COBERTURA DE ' + state.eventoTipo;
+
+      var programadoPara = prog ? fmtHM(fechaDe(val('tFecha'), val('tHora')))
+                         : m === 'evento' ? fmtHM(fechaDe(val('eFecha'), val('eHora'))) : null;
+
+      var coord = state.gps ? state.gps.url
+                : val('ubicManual') ? val('ubicManual') + ' (captura manual)'
+                : 'No disponibles - Ubicar por referencia interna';
+
+      var destino = val('tDestino') || (m === 'urgencia' ? 'A definir por el equipo de paramedicos' : '');
+
+      var cronicas = clinico && state.cronicas === 'si' ? listaConOtro('cronica', 'cronOtro') : [];
+      var equipo = clinico && state.equipo === 'si' ? listaConOtro('equipo', 'equipoOtro') : [];
+
+      var sv = null, svTexto = 'No disponibles al reporte';
+      if (clinico && state.signos === 'si') {
+        sv = {
+          ta_sistolica: num('vSis'), ta_diastolica: num('vDia'), fc: num('vFc'), fr: num('vFr'),
+          spo2: num('vSpo2'), dxt: num('vGlu'), temperatura: num('vTemp')
+        };
+        var ta = (sv.ta_sistolica !== null || sv.ta_diastolica !== null)
+          ? (sv.ta_sistolica !== null ? sv.ta_sistolica : '--') + '/' + (sv.ta_diastolica !== null ? sv.ta_diastolica : '--') + ' mmHg' : 'N/R';
+        svTexto = 'TA: ' + ta + ' | FC: ' + nr(sv.fc, 'LPM') + ' | FR: ' + nr(sv.fr, 'RPM') + ' | SpO2: ' + nr(sv.spo2, '%') +
+                  ' | DXT: ' + nr(sv.dxt, 'mg/dL') + ' | Temp: ' + nr(sv.temperatura, 'C');
+      }
+
+      var folio = 'CRN-' + state.sede + '-' + ahora.getFullYear() + pad(ahora.getMonth() + 1) + pad(ahora.getDate()) + '-' +
+                  pad(ahora.getHours()) + pad(ahora.getMinutes()) + pad(ahora.getSeconds()) + '-' +
+                  Math.random().toString(36).slice(2, 5).toUpperCase();
+
+      /* ----- Mensaje ----- */
+      var L = [
+        LINEA,
+        'SOLICITUD DE SERVICIO - CORNING ZONA PROTEGIDA',
+        'OPERADO POR ROUTEIQ SALUD',
+        LINEA,
+        'SEDE: CORNING ' + state.sede,
+        'TIPO DE SERVICIO: ' + tipo,
+        'FECHA Y HORA: ' + fmtExacta(ahora)
+      ];
+      if (programadoPara) L.push((m === 'evento' ? 'INICIO DE COBERTURA: ' : 'PROGRAMADO PARA: ') + programadoPara);
+      L.push('', 'UBICACION:',
+        '- Referencia interna del paciente: ' + val('ubicInterna'),
+        '- Coordenadas / Maps: ' + coord);
+      if (clinico) L.push('- Destino del traslado: ' + destino);
+      L.push('');
+
+      if (m === 'evento') {
+        L.push('DETALLE DE LA COBERTURA:',
+          '- Tipo: ' + (state.eventoTipo === 'EVENTO' ? 'Evento' : 'Simulacro'),
+          '- Horas de cobertura: ' + val('eHoras'),
+          '- Responsables: ' + val('eResp'), '');
+      } else {
+        L.push('DATOS DEL PACIENTE:',
+          '- Nombre: ' + val('pNombre'),
+          '- Edad / Peso: ' + (val('pEdad') || 'N/R') + ' anos | ' + (val('pPeso') || 'N/R') + ' kg',
+          '- Diagnostico: ' + val('pMotivo'),
+          '- Conciencia: ' + state.conciencia,
+          '- Enfermedades cronicas: ' + (cronicas.length ? cronicas.join(', ') : 'Ninguna'),
+          '',
+          'SOPORTE Y SIGNOS VITALES:',
+          '- Soporte especial: ' + (equipo.length ? equipo.join(', ') : 'No requiere'),
+          '- Signos vitales: ' + svTexto,
+          '');
+      }
+
+      L.push('DATOS DE QUIEN SOLICITA:',
+        '- Reporta: ' + val('sNombre'),
+        '- Departamento: ' + departamento(),
+        '- Telefono / Ext: ' + val('sTel'),
+        '',
+        'FACTURACION:',
+        '- Cobertura: Zona Protegida Corning (Contrato Corporativo)',
+        '',
+        'CONTROL STEN:',
+        '- Unidad asignada: [ Pendiente por Coordinacion ]',
+        '- Personal en ruta: [ Pendiente por Coordinacion ]',
+        '- Folio de sistema: ' + folio,
+        LINEA);
+
+      var mensaje = L.join('\n');
+
+      /* ----- Registro para base de datos ----- */
+      var registro = {
+        folio: folio,
+        fecha_hora: ahora.toISOString(),
+        fecha_hora_local: fmtExacta(ahora),
+        sede_corning: state.sede,
+        sede_fijada_por_qr: state.sedeFija,
+        tipo_servicio: m,
+        tipo_servicio_detalle: tipo,
+        programado_para: programadoPara,
+        paciente: clinico ? {
+          nombre: val('pNombre'),
+          edad: num('pEdad'),
+          peso_kg: num('pPeso'),
+          diagnostico: val('pMotivo'),
+          conciencia: state.conciencia,
+          enfermedades_cronicas: cronicas
+        } : null,
+        ubicacion_interna_px: val('ubicInterna'),
+        gps_link: state.gps ? state.gps.url : null,
+        gps: state.gps ? { lat: state.gps.lat, lng: state.gps.lng, precision_m: state.gps.precision_m } : null,
+        ubicacion_manual: val('ubicManual') || null,
+        destino_traslado: clinico ? destino : null,
+        evento: m === 'evento' ? {
+          tipo: state.eventoTipo, horas_cobertura: num('eHoras'), responsables: val('eResp')
+        } : null,
+        soporte_requerido: clinico ? { requiere: state.equipo === 'si', equipo: equipo } : null,
+        signos_vitales: sv,
+        quien_solicita: {
+          nombre: val('sNombre'),
+          departamento: departamento(),
+          departamento_categoria: val('sDepto'),
+          telefono: val('sTel')
+        },
+        cobertura: 'Zona Protegida Corning (Contrato Corporativo)',
+        mensaje_whatsapp: mensaje,
+        origen: 'portal-corning',
+        status: 'NUEVO_REQUERIMIENTO'
+      };
+
+      return { mensaje: mensaje, registro: registro };
+    }
+
+    /* ---------- FIREBASE (no bloquea el despacho) ---------- */
+    var COLA_KEY = 'corning_registros_pendientes';
+    var fbPromesa = null;
+
+    function firebaseConfigurado() { return !!(firebaseConfig.apiKey && firebaseConfig.projectId); }
+
+    function firebaseListo() {
+      if (!firebaseConfigurado()) return Promise.resolve(null);
+      if (!fbPromesa) {
+        var base = 'https://www.gstatic.com/firebasejs/' + FIREBASE_VERSION + '/';
+        fbPromesa = Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-firestore.js')])
+          .then(function (m) {
+            var app = m[0].initializeApp(firebaseConfig);
+            return { db: m[1].getFirestore(app), f: m[1] };
+          })
+          .catch(function (e) { console.warn('[Portal Corning] Firebase no disponible:', e); fbPromesa = null; return null; });
+      }
+      return fbPromesa;
+    }
+
+    function leerCola() { try { return JSON.parse(localStorage.getItem(COLA_KEY) || '[]'); } catch (e) { return []; } }
+    function escribirCola(c) { try { localStorage.setItem(COLA_KEY, JSON.stringify(c)); } catch (e) {} }
+    function quitarDeCola(folio) { escribirCola(leerCola().filter(function (r) { return r.folio !== folio; })); }
+
+    /* Escritura idempotente: el folio es el ID del documento, así no se duplica al reintentar */
+    function subir(reg) {
+      return firebaseListo().then(function (x) {
+        if (!x) throw new Error('firebase-no-disponible');
+        var datos = Object.assign({}, reg, { timestamp: x.f.serverTimestamp() });
+        return x.f.setDoc(x.f.doc(x.db, FIREBASE_COLECCION, reg.folio), datos);
+      }).then(function () { quitarDeCola(reg.folio); });
+    }
+
+    function conTiempo(p, ms) {
+      return Promise.race([p, new Promise(function (_, rej) { setTimeout(function () { rej(new Error('tiempo')); }, ms); })]);
+    }
+
+    function registrar(reg) {
+      if (!firebaseConfigurado()) return Promise.resolve('sin-config');
+      var cola = leerCola(); cola.push(reg); escribirCola(cola);
+      return conTiempo(subir(reg), 10000).then(function () { return 'ok'; }, function () { return 'pendiente'; });
+    }
+
+    /* Reintenta registros que no se pudieron guardar en visitas anteriores */
+    if (firebaseConfigurado()) {
+      firebaseListo();
+      var pendientes = leerCola();
+      if (pendientes.length) pendientes.forEach(function (r) { subir(r).catch(function () {}); });
+    }
+
+    /* ---------- MODAL ---------- */
+    var ultimoFoco = null;
+
+    function abrirModal() {
+      var r = construir();
+      state.mensaje = r.mensaje;
+      state.registro = r.registro;
+      $('preview').textContent = state.mensaje;
+      $('chkConfirm').checked = false;
+      $('btnEnviar').disabled = true;
+
+      var critico = state.modulo === 'urgencia';
+      $('avisoBox').className = 'rounded-md border border-l-4 px-4 py-3 ' +
+        (critico ? 'border-red-700/40 border-l-red-700 bg-white' : 'border-corning/25 border-l-corning bg-corning-light');
+      $('avisoTitle').className = 'text-sm font-semibold ' + (critico ? 'text-red-700' : 'text-corning');
+      $('btnEnviar').classList.toggle('btn-danger', critico);
+      $('btnEnviar').classList.toggle('btn-primary', !critico);
+
+      ultimoFoco = document.activeElement;
+      $('modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function () { $('chkConfirm').focus(); }, 50);
+    }
+
+    function cerrarModal() {
+      $('modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+    }
+
+    document.querySelectorAll('[data-close]').forEach(function (el) { el.addEventListener('click', cerrarModal); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !$('modal').classList.contains('hidden')) cerrarModal();
+    });
+
+    $('chkConfirm').addEventListener('change', function () { $('btnEnviar').disabled = !this.checked; });
+
+    $('btnCopiar').addEventListener('click', function () {
+      var btn = this;
+      function ok() { btn.textContent = 'Texto copiado'; setTimeout(function () { btn.textContent = 'Copiar texto'; }, 2000); }
+      function respaldo() {
+        var ta = document.createElement('textarea');
+        ta.value = state.mensaje; ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); ok(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(state.mensaje).then(ok, respaldo);
+      else respaldo();
+    });
+
+    $('btnEnviar').addEventListener('click', function () {
+      if (!$('chkConfirm').checked) return;
+
+      /* 1) Guardado en segundo plano (no detiene el despacho) */
+      var reg = state.registro;
+      var promesaRegistro = registrar(reg);
+
+      /* 2) Apertura inmediata de WhatsApp */
+      var url = 'https://api.whatsapp.com/send?' +
+        (WHATSAPP_NUMERO ? 'phone=' + encodeURIComponent(WHATSAPP_NUMERO) + '&' : '') +
+        'text=' + encodeURIComponent(state.mensaje);
+      var w = window.open(url, '_blank', 'noopener');
+      if (!w) window.location.href = url;
+
+      cerrarModal();
+      $('successBanner').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      var est = $('registroEstado');
+      if (firebaseConfigurado()) {
+        est.classList.remove('hidden');
+        est.textContent = 'Registrando en sistema... Folio ' + reg.folio;
+      }
+      promesaRegistro.then(function (r) {
+        if (r === 'ok') est.textContent = 'Registro guardado en sistema. Folio ' + reg.folio;
+        else if (r === 'pendiente') est.textContent = 'Sin conexión con el sistema: el registro se sincronizará automáticamente. Folio ' + reg.folio;
+      });
+    });
+
+    $('btnNueva').addEventListener('click', function () { window.location.reload(); });
+
+    /* ---------- ENVÍO DEL FORMULARIO ---------- */
+    $('form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (validar()) abrirModal();
+    });
+
+    /* ---------- ESTADO INICIAL ---------- */
+    setSeg('traslado', 'hoy');
+    setSeg('eventoTipo', 'EVENTO');
+    setSeg('signos', 'no');
+    setSeg('cronicas', 'no');
+    setSeg('equipo', '');
+    setSeg('conciencia', '');
+    setModulo('urgencia');
+  })();
+  </script>
+</body>
+</html>
